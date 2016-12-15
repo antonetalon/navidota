@@ -131,7 +131,7 @@ public class AuthController {
 	}
 	private static void OnAuthed(AuthModel.Type type) {
 		GameController.Instance.SetCurrAuth(new AuthModel(type));
-		if (OnAuthed!=null)
-			OnAuthed();
+		if (OnAuthenticated!=null)
+			OnAuthenticated();
 	}
 }

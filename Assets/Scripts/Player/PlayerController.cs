@@ -16,9 +16,10 @@ public class PlayerController {
 		new AccountDetailsRequest()
 			.Send(response => {
 				bool success = !response.HasErrors;
-				if (success) {
-					PlayerModel player = new PlayerModel();
-
+				if (success) {					
+					JSONDictData data = new JSONDictData(response.JSONString);
+					string name = data.GetString("displayName", string.Empty);
+					PlayerModel player = new PlayerModel(name);
 					GameController.Instance.SetCurrPlayer(player);
 				}
 				if (onResponse != null)
