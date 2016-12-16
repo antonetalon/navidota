@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Multiplayer;
 
 public class GameController : MonoBehaviour {
 
 	public static bool Inited { get { return Instance!=null && Instance.CurrPlayer!=null; } }
-	public static bool Authed { get { return Instance!=null && Instance.CurrAuth!=null; } }
+	public static bool Authed { get { return Instance!=null && Instance.Auth!=null; } }
 	public static GameController Instance { get; private set; }
 	public PlayerModel CurrPlayer { get; private set; }
-	public AuthModel CurrAuth { get; private set; }
+	public AuthModel Auth { get; private set; }
+	public LobbyModel Lobby { get; private set; }
 
 	void Awake() {
 		if (Instance!=null) {
@@ -17,17 +19,24 @@ public class GameController : MonoBehaviour {
 		}
 		Instance = this;
 		DontDestroyOnLoad(this);
+	}	
+	void Start() {
 		PlayerController.Init();
+		LobbyController.Init();
 	}	
 
 	public void SetCurrPlayer(PlayerModel player) {
 		CurrPlayer = player;
 	}
 	public void SetCurrAuth(AuthModel auth) {
-		CurrAuth = auth;
+		Auth = auth;
+	}
+	public void SetLobby(LobbyModel lobby) {
+		Lobby = lobby;
 	}
 
 	void Update () {
 		AuthController.Update();
+		LobbyController.Update();
 	}
 }

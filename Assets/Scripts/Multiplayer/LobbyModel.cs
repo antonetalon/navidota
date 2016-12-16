@@ -1,15 +1,26 @@
-﻿/*using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using GameSparks.Core;
 using System.Collections.Generic;
 
 namespace Multiplayer {
-	
-	public interface IMatchLobbyReadonly: IObservable {
-		ReadonlyList<HumanPlayerDesc> Players { get; }
-		HumanPlayerDesc OppoPlayer { get; }
+	public class LobbyPlayerModel {
+		public readonly string Name;
+		public readonly string Id;
+		public readonly int IdInMatch;
+		public LobbyPlayerModel(string name, string id, int idInMatch) {
+			this.Name = name;
+			this.Id = id;
+			this.IdInMatch = idInMatch;
+		}
 	}
-	public class MatchLobby:Observable, IMatchLobbyReadonly {
+	public interface IMatchLobbyReadonly: IObservable {
+		ReadonlyList<LobbyPlayerModel> Players { get; }
+		bool IsSearchingGame { get; }
+		float EndTime { get; }
+		bool IsPlaying { get; }
+	}
+	/*public class MatchLobby:Observable, IMatchLobbyReadonly {
 		public string MatchId { get { return _GSMatchLobby.matchID; } }
 		private GSMatchLobbyInfo _GSMatchLobby;
 		public GSMatchLobbyInfo GetGSMatch() { return _GSMatchLobby; }
@@ -40,69 +51,61 @@ namespace Multiplayer {
 		}
 	}
 
+*/
 
-	public interface ILobbyReadonly: IObservable {
-		bool IsSearchingGame { get; }
-		IMatchLobbyReadonly Match { get; }
-		bool IsReady { get; }
-		bool IsPlaying { get; }
-		float RemainingSearchTime { get; }
-		HeroModel OppoHero { get; }
-		event System.Action OnMatchFound;
-	}
-	public class LobbyModel : Observable, ILobbyReadonly {
+	public class LobbyModel : Observable, IMatchLobbyReadonly {
 		public bool IsSearchingGame { get; private set; }
-		private float _startSearchTime;
-		const float SearchingDuration = 15;
-		public float RemainingSearchTime { get { return _startSearchTime + SearchingDuration - Time.time; } }
-		public void OnStartSearch() {
-			_startSearchTime = Time.time;
-			IsSearchingGame = true;
-			_match = null;
-			NotifyObservers();
-		}
-		private MatchLobby _match;
-		public MatchLobby MatchEditable { get { return _match; } }
-		public IMatchLobbyReadonly Match { get { return _match; } }
-		public HeroModel OppoHero { get; private set; }
-		public event System.Action OnMatchFound;
-		public void OnSearchEnded(MatchLobby foundMatch) {
-			IsSearchingGame = false;
-			_match = foundMatch;
-			NotifyObservers();
-			if (OnMatchFound != null)
-				OnMatchFound ();
-		}
-		public void OnSearchCancelled() {
-			OnSearchEnded (null);
-		}
-		public bool IsReady { get; private set; }
 		public bool IsPlaying { get; private set; }
-		public void OnOppoHeroDownloaded(HeroModel hero) {
-			OppoHero = hero;
-		}
-		//public float MatchStartTime { get; private set; }
-		public void OnMatchReady() {
-			//_match = null;
-			IsReady = true;
-		//	MatchStartTime = Time.realtimeSinceStartup;
-			NotifyObservers();
-		}
-		public void OnMatchUnReady() {
-			IsReady = false;
+		private float _startSearchTime;
+		const float SearchingDuration = 18;
+		public float EndTime { get { return _startSearchTime + SearchingDuration; } }
+		public LobbyModel() {}
+		public void StartSearching() {
+			_startSearchTime = Time.time;
+			Debug.Log("start search time = " + _startSearchTime.ToString());
+			IsSearchingGame = true;
 			IsPlaying = false;
+			_matchFound = false;
+			_matchNotFound = false;
+			_players = null;
 			NotifyObservers();
 		}
-		public void OnMatchStarted() {
+		private bool _matchFound;
+		private bool _matchNotFound;
+		List<LobbyPlayerModel> _players;
+		public ReadonlyList<LobbyPlayerModel> Players  { get; private set; }
+		public string Host { get; private set; }
+		public int Port { get; private set; }
+		public string AccessToken { get; private set; }
+		public string MatchId  { get; private set; }
+		public void OnMatchFound(IEnumerable<LobbyPlayerModel> players, string host, int port, string accessToken, string matchId) {
+			_players = new List<LobbyPlayerModel>();
+			foreach (var player in players)
+				_players.Add(player);
+			this.Players = new ReadonlyList<LobbyPlayerModel>(_players);
+			IsSearchingGame = false;
+			_matchFound = true;
+			this.Host = host;
+			this.Port = port;
+			this.AccessToken = accessToken;
+			this.MatchId = matchId;
+			NotifyObservers();
+		}
+		public void OnRTSessionConnected() {
 			IsPlaying = true;
 			NotifyObservers();
 		}
-		public void OnMatchFinished() {
+		public void OnRTSessionDisconnected() {
 			IsPlaying = false;
-			IsReady = false;
-			_match = null;
 			NotifyObservers();
 		}
+		// Cancelled by player or timeout.
+		public void OnSearchCancelled() {
+			IsSearchingGame = false;
+			_matchNotFound = true;
+			NotifyObservers();
+		}
+
 	}
 
-}*/
+}

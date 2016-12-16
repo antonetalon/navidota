@@ -57,7 +57,7 @@ public class AuthController {
 		}
 		SetPlayerDetails(password, null, login, (success)=>{
 			if (success)
-				GameController.Instance.CurrAuth.AddAuthType(AuthModel.Type.LoginPass);
+				GameController.Instance.Auth.AddAuthType(AuthModel.Type.LoginPass);
 			if (onResponse!=null)
 				onResponse(success);
 		});
