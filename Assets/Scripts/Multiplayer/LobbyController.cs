@@ -44,6 +44,10 @@ namespace Multiplayer {
 						onResponse(success);
 				});
 		}
+		public static void LeaveMatch() {
+			GameSparksRTManager.Instance.RTSessionDisconnect();
+			GameController.Instance.Lobby.OnRTSessionDisconnected();
+		}
 		private static void OnMatchFound(MatchFoundMessage matchFoundMessage) {
 			if (matchFoundMessage==null || matchFoundMessage.HasErrors)	{
 				Debug.Log("OnMatchFound received no valid match");

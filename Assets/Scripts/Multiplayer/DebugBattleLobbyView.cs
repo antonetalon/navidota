@@ -39,6 +39,8 @@ namespace Multiplayer {
 			} else if (GameController.Instance.Lobby.IsPlaying) {
 				// Match is played.
 				GUILayout.Label("Match is currently playing..." , DebugOnGUIAuth.ProperHeight);
+				if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight))
+					LobbyController.LeaveMatch();
 				//if (GUILayout.Button("Send debug data to opponent", DebugOnGUIAuth.ProperHeight)) {
 				//	_debugData = (byte)Random.Range(0, 255);
 				//	GameSparksRTManager.Instance.SendDataReliable(1, new byte[1] { _debugData });

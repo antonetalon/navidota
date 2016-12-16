@@ -42,6 +42,10 @@ public class GameSparksRTManager : MonoBehaviour {
 		_RT.Connect();
 	}
 
+	public void RTSessionDisconnect() {
+		_RT.Disconnect();
+	}
+
 	private void OnPlayerConnectedToGame(int _peerId){
 		//Debug.Log ("Player Connected, "+_peerId);
 	}
