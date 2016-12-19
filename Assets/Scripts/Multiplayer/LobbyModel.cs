@@ -99,6 +99,22 @@ namespace Multiplayer {
 			IsPlaying = false;
 			NotifyObservers();
 		}
+		public void OnPlayerDisconnected(int peerId) {
+			bool found = false;
+			for (int i=0;i<_players.Count;i++) {
+				if (_players[i].IdInMatch == peerId) {
+					found = true;
+					_players.RemoveAt(i);
+					break;
+				}
+			}
+			if (!found)
+				Debug.LogError("Disconnected player was not in players list");
+			NotifyObservers();
+		}
+		public void OnPlayerConnected(int peerId) {
+			// Not implemented. How can player connect if its not 'drop on drop off'
+		}
 		// Cancelled by player or timeout.
 		public void OnSearchCancelled() {
 			IsSearchingGame = false;

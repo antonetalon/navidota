@@ -39,7 +39,7 @@ public class GameSparksRTManager : MonoBehaviour {
 		FindMatchResponse response = new FindMatchResponse(mockedResponse);
 		_RT.Configure(response, 
 			(peerId) =>  {    OnPlayerConnectedToGame(peerId);  },
-			(peerId) => {    OnPlayerDisconnected(peerId);    },
+			(peerId) => {    OnPlayerDisconnectedFromGame(peerId);    },
 			(ready) => {    OnRTReady(ready);    },
 			(packet) => {    OnPacketReceived(packet);    });
 		_RT.Connect();
@@ -51,12 +51,18 @@ public class GameSparksRTManager : MonoBehaviour {
 		_RT.Disconnect();
 	}
 
-	private void OnPlayerConnectedToGame(int _peerId){
-		//Debug.Log ("Player Connected, "+_peerId);
+	public event Action<int> OnPlayerConnected;
+	private void OnPlayerConnectedToGame(int peerId){
+		Debug.Log ("Player Connected, "+peerId);
+		if (OnPlayerConnected!=null)
+			OnPlayerConnected(peerId);
 	}
 
-	private void OnPlayerDisconnected(int _peerId){
-		//Debug.Log ("Player Disconnected, "+_peerId);
+	public event Action<int> OnPlayerDisconnected;
+	private void OnPlayerDisconnectedFromGame(int peerId){
+		Debug.Log ("Player Disconnected, "+peerId);
+		if (OnPlayerDisconnected!=null)
+			OnPlayerDisconnected(peerId);
 	}
 	private void OnRTReady(bool isReady){		
 		if (isReady) {

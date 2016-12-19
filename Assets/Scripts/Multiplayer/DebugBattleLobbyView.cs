@@ -39,6 +39,8 @@ namespace Multiplayer {
 			} else if (GameController.Instance.Lobby.IsPlaying) {
 				// Match is played.
 				GUILayout.Label("Match is currently playing..." , DebugOnGUIAuth.ProperHeight);
+				foreach (var player in GameController.Instance.Lobby.Players)
+					GUILayout.Label("player name = " + player.Name);
 				if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight))
 					LobbyController.LeaveMatch();
 				//if (GUILayout.Button("Send debug data to opponent", DebugOnGUIAuth.ProperHeight)) {

@@ -18,6 +18,8 @@ namespace Multiplayer {
 					// TODO: Implement MatchUpdatedMessage
 				};
 				GameSparksRTManager.Instance.OnRTDisconnected += OnRTMatchDisConnected;
+				GameSparksRTManager.Instance.OnPlayerDisconnected += OnPlayerDisconnected;
+				GameSparksRTManager.Instance.OnPlayerConnected += OnPlayerConnected;
 			}
 		}
 		private static bool _initedOnce;
@@ -28,7 +30,8 @@ namespace Multiplayer {
 				.SetSkill (0)
 				.Send ((response) => {
 					bool success = !response.HasErrors;
-					GameController.Instance.Lobby.StartSearching();
+					if (success)
+						GameController.Instance.Lobby.StartSearching();
 					if (onResponse!=null)
 						onResponse(success);
 				});
@@ -40,6 +43,8 @@ namespace Multiplayer {
 				.SetAction("cancel")
 				.Send ((response) => {
 					bool success = !response.HasErrors;
+					if (success)
+						GameController.Instance.Lobby.OnSearchCancelled();
 					if (onResponse!=null)
 						onResponse(success);
 				});
@@ -47,6 +52,12 @@ namespace Multiplayer {
 		public static void LeaveMatch() {
 			GameSparksRTManager.Instance.RTSessionDisconnect();
 			GameController.Instance.Lobby.OnRTSessionDisconnected();
+		}
+		private static void OnPlayerDisconnected(int peerId) {
+			GameController.Instance.Lobby.OnPlayerDisconnected(peerId);
+		}
+		private static void OnPlayerConnected(int peerId) {
+			GameController.Instance.Lobby.OnPlayerConnected(peerId);
 		}
 		private static void OnMatchFound(MatchFoundMessage matchFoundMessage) {
 			if (matchFoundMessage==null || matchFoundMessage.HasErrors)	{
