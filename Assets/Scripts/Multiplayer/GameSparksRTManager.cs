@@ -85,7 +85,7 @@ public class GameSparksRTManager : MonoBehaviour {
 	public event Action<MatchCommand> OnCommandReceived;
 	private void OnPacketReceived(RTPacket _packet){
 		Debug.Log("Received RT packet, opCode = " + _packet.OpCode);
-		int messageId = _packet.OpCode / MaxCommandId;
+		/*int messageId = _packet.OpCode / MaxCommandId;
 		int command = messageId % MaxCommandId;
 		//		Debug.LogFormat ("received command {0} with messageid {1}", commandId, messageId);
 
@@ -107,7 +107,7 @@ public class GameSparksRTManager : MonoBehaviour {
 			//			Debug.Log ("stopped sending command with messageid " + messageId.ToString());
 			_sentCommands.Remove (messageId); // Command receiving confirmed. Dont resent this command.
 			return; // Ignore command confirmer.
-		}
+		}*/
 
 		OnReliableDataReceived(_packet.OpCode, _packet.Data);
 	}
@@ -121,7 +121,9 @@ public class GameSparksRTManager : MonoBehaviour {
 	/// <param name="opCode">Op code.</param>
 	/// <param name="data">Data.</param>
 	private void OnReliableDataReceived(int opCode, RTData data) {
-		
+		MatchCommand command = _commandsParser.ParseCommand(opCode, data);
+		if (OnCommandReceived!=null)
+			OnCommandReceived(command);
 	}
 	static int[] _serverPeerId = new int[]{ 0 };
 	private void SendPacket(int command, RTData data, bool reliable) {
@@ -151,11 +153,12 @@ public class GameSparksRTManager : MonoBehaviour {
 		SendDataReliable(opCode, command.Data);
 	}
 	private void SendDataReliable (int opCode, RTData data) {
-		int messageId = UnityEngine.Random.Range (0, int.MaxValue);
-		messageId /= MaxCommandId;
-		CheckCommandId(opCode);
-		int commandId2 = opCode + messageId*MaxCommandId;
-		SendPacket(commandId2, data, true);
+		//int messageId = UnityEngine.Random.Range (0, int.MaxValue);
+		//messageId /= MaxCommandId;
+		//CheckCommandId(opCode);
+		//int commandId2 = opCode + messageId*MaxCommandId;
+		//SendPacket(commandId2, data, true);
+		SendPacket(opCode, data, true);
 	}
 	private void SendDataFastDuplicate (int opCode, RTData data) {
 		Debug.LogError("This one is implemented only for peer to peer");
