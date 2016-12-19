@@ -4,22 +4,21 @@ using GameSparks.Core;
 using System.Collections.Generic;
 
 namespace Multiplayer {
-	public class DebugBattleLobbyView : MonoBehaviour {
+	public static class DebugBattleLobbyView {
 		public static GUIStyle style = new GUIStyle();
 		public const int HorizontalSpacing = 10;
-		// Use this for initialization
-		void Start () {
-			//GameSparksRTManager.Instance.OnDataReceived += OnDebugDataReceived;
-		}
-		void OnDestroy() {
-			//GameSparksRTManager.Instance.OnDataReceived -= OnDebugDataReceived;
+		public static void Update() {
+			if (GameController.Instance.Lobby.State == StateEnum.GettingReady)
+				_remainingGettingReadyTime -= Time.deltaTime;
 		}
 
-		private byte _debugData;
-		private void OnDebugDataReceived(int commandId, int senderId, byte[] data) {
-			_debugData = data[0];
-		}
+//		private byte _debugData;
+//		private void OnDebugDataReceived(int commandId, int senderId, byte[] data) {
+//			_debugData = data[0];
+//		}
 		private static bool _waitingServerResponse;
+		private static StateEnum _prevState;
+		private static float _remainingGettingReadyTime;
 		public static void OnGUI() {
 			if (!GameController.Inited)
 				return;
@@ -27,37 +26,55 @@ namespace Multiplayer {
 				GUILayout.Label("waiting server response...", DebugOnGUIAuth.ProperHeight);
 				return;
 			}
-			if (GameController.Instance.Lobby.IsSearchingGame) {
-				// Lobby match search.
-				GUILayout.Label("Searching match..." + Mathf.RoundToInt(GameController.Instance.Lobby.EndTime-Time.time).ToString(), DebugOnGUIAuth.ProperHeight);
-				if (GUILayout.Button("Cancel", DebugOnGUIAuth.ProperHeight)) {
-					_waitingServerResponse = true;
-					LobbyController.CancelSearchMatch((success)=>{
-						_waitingServerResponse = false;
-					});
-				}
-			} else if (GameController.Instance.Lobby.IsPlaying) {
-				// Match is played.
-				GUILayout.Label("Match is currently playing..." , DebugOnGUIAuth.ProperHeight);
-				foreach (var player in GameController.Instance.Lobby.Players)
-					GUILayout.Label("player name = " + player.Name);
-				if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight))
-					LobbyController.LeaveMatch();
-				//if (GUILayout.Button("Send debug data to opponent", DebugOnGUIAuth.ProperHeight)) {
-				//	_debugData = (byte)Random.Range(0, 255);
-				//	GameSparksRTManager.Instance.SendDataReliable(1, new byte[1] { _debugData });
-				//}
-				//GUILayout.Label("debug data = "+_debugData.ToString(), DebugOnGUIAuth.ProperHeight);
-			} else {
-				// Lobby match can be searched.
-				if (GUILayout.Button("Find match", DebugOnGUIAuth.ProperHeight)) {
-					_waitingServerResponse = true;
-					LobbyController.StartSearchMatch((success)=>{
-						_waitingServerResponse = false;
-						Debug.Log("Start search success = " + success.ToString());
-					});
-				}
+			GUILayout.Label("State = " + GameController.Instance.Lobby.State.ToString());
+			switch (GameController.Instance.Lobby.State) {
+				case StateEnum.Idle:
+					// Lobby match can be searched.
+					if (GUILayout.Button("Find match", DebugOnGUIAuth.ProperHeight)) {
+						_waitingServerResponse = true;
+						LobbyController.StartSearchMatch((success)=>{
+							_waitingServerResponse = false;
+							Debug.Log("Start search success = " + success.ToString());
+						});
+					}
+					break;
+				case StateEnum.SearchingMatch:
+					// Lobby match search.
+					GUILayout.Label("Searching match..." + Mathf.RoundToInt(GameController.Instance.Lobby.EndTime-Time.time).ToString(), DebugOnGUIAuth.ProperHeight);
+					if (GUILayout.Button("Cancel", DebugOnGUIAuth.ProperHeight)) {
+						_waitingServerResponse = true;
+						LobbyController.CancelSearchMatch((success)=>{
+							_waitingServerResponse = false;
+						});
+					}
+					break;
+				case StateEnum.ConnectingMatch:
+					// Connecting game.
+					GUILayout.Label("connecting game...", DebugOnGUIAuth.ProperHeight);
+					break;
+				case StateEnum.GettingReady:
+					// Getting ready.
+					GUILayout.Label("preparing resources, getting ready...", DebugOnGUIAuth.ProperHeight);
+					if (_prevState != StateEnum.GettingReady)
+						_remainingGettingReadyTime = Random.value*3+2;			
+					if (_remainingGettingReadyTime<0)
+						LobbyController.BecomeReadyForGame();
+					GUILayout.Label(Mathf.RoundToInt(_remainingGettingReadyTime).ToString(), DebugOnGUIAuth.ProperHeight);
+					break;
+				case StateEnum.WaitingOtherPlayers:
+					GUILayout.Label("Waiting other players...", DebugOnGUIAuth.ProperHeight);
+					break;
+				case StateEnum.IsPlaying:
+					// Match is played.
+					GUILayout.Label("Match is currently playing..." , DebugOnGUIAuth.ProperHeight);
+					foreach (var player in GameController.Instance.Lobby.Players)
+						GUILayout.Label("player name = " + player.Name);
+					if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight))
+						LobbyController.LeaveMatch();
+					break;
 			}
+
+			_prevState = GameController.Instance.Lobby.State;
 		}
 	}
 

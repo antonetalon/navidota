@@ -16,9 +16,8 @@ namespace Multiplayer {
 	}
 	public interface IMatchLobbyReadonly: IObservable {
 		ReadonlyList<LobbyPlayerModel> Players { get; }
-		bool IsSearchingGame { get; }
 		float EndTime { get; }
-		bool IsPlaying { get; }
+		StateEnum State { get; }
 	}
 	/*public class MatchLobby:Observable, IMatchLobbyReadonly {
 		public string MatchId { get { return _GSMatchLobby.matchID; } }
@@ -52,19 +51,26 @@ namespace Multiplayer {
 	}
 
 */
-
-	public class LobbyModel : Observable, IMatchLobbyReadonly {
-		public bool IsSearchingGame { get; private set; }
-		public bool IsPlaying { get; private set; }
+	public enum StateEnum { 
+		Idle, // Doing nothing, ready to start searching.
+		SearchingMatch, // Searching players for match.
+		ConnectingMatch, // Connecting session with found players.
+		GettingReady, // Loading game resources, preparing scene for start etc.
+		WaitingOtherPlayers, // Waiting while all other players got ready.
+		IsPlaying // Actually enjoying gameplay.
+	}
+	public class LobbyModel : Observable, IMatchLobbyReadonly {		
+		public StateEnum State { get; private set; }
 		private float _startSearchTime;
 		const float SearchingDuration = 18;
 		public float EndTime { get { return _startSearchTime + SearchingDuration; } }
-		public LobbyModel() {}
+		public LobbyModel() {
+			State = StateEnum.Idle;
+		}
 		public void StartSearching() {
 			_startSearchTime = Time.time;
 			Debug.Log("start search time = " + _startSearchTime.ToString());
-			IsSearchingGame = true;
-			IsPlaying = false;
+			State = StateEnum.SearchingMatch;
 			_matchFound = false;
 			_matchNotFound = false;
 			_players = null;
@@ -83,7 +89,7 @@ namespace Multiplayer {
 			foreach (var player in players)
 				_players.Add(player);
 			this.Players = new ReadonlyList<LobbyPlayerModel>(_players);
-			IsSearchingGame = false;
+			State = StateEnum.ConnectingMatch;
 			_matchFound = true;
 			this.Host = host;
 			this.Port = port;
@@ -92,11 +98,19 @@ namespace Multiplayer {
 			NotifyObservers();
 		}
 		public void OnRTSessionConnected() {
-			IsPlaying = true;
+			State = StateEnum.GettingReady;
 			NotifyObservers();
 		}
 		public void OnRTSessionDisconnected() {
-			IsPlaying = false;
+			State = StateEnum.Idle;
+			NotifyObservers();
+		}
+		public void BecomeReadyForGame() {
+			State = StateEnum.WaitingOtherPlayers;
+			NotifyObservers();
+		}
+		public void OnAllPlayersReady() {
+			State = StateEnum.IsPlaying;
 			NotifyObservers();
 		}
 		public void OnPlayerDisconnected(int peerId) {
@@ -117,7 +131,7 @@ namespace Multiplayer {
 		}
 		// Cancelled by player or timeout.
 		public void OnSearchCancelled() {
-			IsSearchingGame = false;
+			State = StateEnum.Idle;
 			_matchNotFound = true;
 			NotifyObservers();
 		}

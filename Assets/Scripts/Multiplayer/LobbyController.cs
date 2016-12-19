@@ -20,6 +20,7 @@ namespace Multiplayer {
 				GameSparksRTManager.Instance.OnRTDisconnected += OnRTMatchDisConnected;
 				GameSparksRTManager.Instance.OnPlayerDisconnected += OnPlayerDisconnected;
 				GameSparksRTManager.Instance.OnPlayerConnected += OnPlayerConnected;
+				GameSparksRTManager.Instance.OnCommandReceived += OnCommandReceived;
 			}
 		}
 		private static bool _initedOnce;
@@ -83,11 +84,20 @@ namespace Multiplayer {
 			Debug.Log("Match disconnected");
 			GameController.Instance.Lobby.OnRTSessionDisconnected();
 		}
+		public static void BecomeReadyForGame() {
+			Debug.Log("Became ready for game");
+			GameController.Instance.Lobby.BecomeReadyForGame();
+			GameSparksRTManager.Instance.SendDataReliable(new CommandReadyForMatch());
+		}
+		private static void OnCommandReceived(MatchCommand command) {
+			if (command is CommandAllPlayersReady)
+				GameController.Instance.Lobby.OnAllPlayersReady();
+		}
 		public static void Update() {
 			UpdateSearchTimeout();
 		}
 		private static void UpdateSearchTimeout() {
-			if (!GameController.Instance.Lobby.IsSearchingGame)
+			if (GameController.Instance.Lobby.State != StateEnum.SearchingMatch)
 				return;
 			if (GameController.Instance.Lobby.EndTime>Time.time)
 				return;

@@ -4,7 +4,9 @@ using UnityEngine;
 using Multiplayer;
 
 public class DebugUI : MonoBehaviour {
-
+	private void Update() {
+		DebugBattleLobbyView.Update();
+	}
 	public void OnGUI() {
 		GUILayout.BeginArea(new Rect(Vector2.zero, new Vector2(Screen.width, Screen.height)));
 		DebugOnGUIAuth.OnGUI();

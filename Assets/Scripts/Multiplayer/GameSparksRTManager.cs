@@ -21,6 +21,7 @@ public class GameSparksRTManager : MonoBehaviour {
 		DontDestroyOnLoad(this);
 		_sentCommands = new Dictionary<int, SentCommand>();
 		_lastReceivedMessageIds = new List<int>();
+		_commandsParser = new DefaultCommandsParser();
 	}
 	bool _isStartingSession;
 	Action<bool> _onResponse;
@@ -81,7 +82,7 @@ public class GameSparksRTManager : MonoBehaviour {
 	}
 	private const int MaxLastMessageIds = 1000;
 	private List<int> _lastReceivedMessageIds;
-	public event System.Action<int, RTData> OnDataReceived;
+	public event Action<MatchCommand> OnCommandReceived;
 	private void OnPacketReceived(RTPacket _packet){
 		int messageId = _packet.OpCode / MaxCommandId;
 		int command = messageId % MaxCommandId;
@@ -107,11 +108,24 @@ public class GameSparksRTManager : MonoBehaviour {
 			return; // Ignore command confirmer.
 		}
 
-		if (OnDataReceived!=null)
-			OnDataReceived(command, _packet.Data);
+		OnReliableDataReceived(_packet.OpCode, _packet.Data);
+	}
+	private ReceivedCommandsFactory _commandsParser;
+	public void SetCommandsFactory(ReceivedCommandsFactory commandsParser) {
+		_commandsParser = commandsParser;
+	}
+	/// <summary>
+	/// Data that other side really sent. 
+	/// </summary>
+	/// <param name="opCode">Op code.</param>
+	/// <param name="data">Data.</param>
+	private void OnReliableDataReceived(int opCode, RTData data) {
+		
 	}
 	static int[] _serverPeerId = new int[]{ 0 };
 	private void SendPacket(int command, RTData data, bool reliable) {
+		if (data==null)
+			data = new RTData();
 		_RT.SendData(command, reliable?GameSparksRT.DeliveryIntent.RELIABLE:GameSparksRT.DeliveryIntent.UNRELIABLE_SEQUENCED, data, _serverPeerId);
 	}
 	void Update() {
@@ -126,18 +140,27 @@ public class GameSparksRTManager : MonoBehaviour {
 			Debug.LogError (string.Format("command {0} has illegal ind {1}", command.ToString(), command));
 		#endif
 	}
-	public void SendDataReliable (int command, RTData data) {
+	public void SendDataReliable (MatchCommand command) {
+		int opCode = _commandsParser.GetOpCode(command.GetType());
+		if (opCode==-1) {
+			Debug.LogError("opcode not found for command " + command.ToString());
+			return;
+		}
+		SendDataReliable(opCode, command.Data);
+	}
+	private void SendDataReliable (int opCode, RTData data) {
 		int messageId = UnityEngine.Random.Range (0, int.MaxValue);
 		messageId /= MaxCommandId;
-		CheckCommandId(command);
-		int commandId2 = command + messageId*MaxCommandId;
+		CheckCommandId(opCode);
+		int commandId2 = opCode + messageId*MaxCommandId;
 		SendPacket(commandId2, data, true);
 	}
-	public void SendDataFastDuplicate (int command, RTData data) {
-		CheckCommandId(command);
+	private void SendDataFastDuplicate (int opCode, RTData data) {
+		Debug.LogError("This one is implemented only for peer to peer");
+		CheckCommandId(opCode);
 		int messageId = UnityEngine.Random.Range (0, int.MaxValue);
 		messageId /= MaxCommandId;
-		SendData (command, data, messageId);
+		SendData (opCode, data, messageId);
 	}
 
 	private class SentCommand
