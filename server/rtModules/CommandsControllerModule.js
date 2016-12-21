@@ -1,7 +1,10 @@
 var CommandCodes = require("CommandCodesModule");
 var Commands = require("CommandModule");
+var SyncStartSystem = require("SyncStartSystemModule");
 
 module.exports.Send = function(opCode, rtData) {
+    if (rtData==null)
+        rtData = RTSession.newData();
     RTSession.newPacket().setOpCode(opCode).setData(rtData).send();
 }
 
@@ -30,5 +33,8 @@ module.exports.ProcessCommands = function() {
 }
 
 function ProcessCommand(/*CommandModule.Command*/command) {
-    RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.sendersPeer);
+    RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.SendersPeer);
+    switch (command.OpCode) {
+        case CommandCodes.CommandCodes.ReadyForMatch:SyncStartSystem.ProcessReadyForMatch(command); break;
+    }
 }
