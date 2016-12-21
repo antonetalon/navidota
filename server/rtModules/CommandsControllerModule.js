@@ -6,19 +6,29 @@ module.exports.Send = function(opCode, rtData) {
 }
 
 module.exports.RegisterCommands = function() {
-    RTSession.getLogger().debug("called register commands");
     AddCommand(CommandCodes.CommandCodes.ReadyForMatch);
 }
 
+module.exports.ReceivedCommands = [];
+
 
 function AddCommand(opCode) {
-    RTSession.getLogger().debug("before registering first command, opCode = "+opCode);
     RTSession.onPacket(opCode, function(packet){
         var time = new Date().getTime();
         var sender = packet.getSender().getPeerId();
         var command = new Commands.Command(opCode, time, sender, packet.getData());
-        var commands = [];
-        commands.push(command);
-        RTSession.getLogger().debug("saved command with opCode = " + opCode);
+        module.exports.ReceivedCommands.push(command);
+        //RTSession.getLogger().debug("saved command with opCode = " + opCode + ", commands count = " + module.exports.ReceivedCommands.length);
     });
+}
+
+module.exports.ProcessCommands = function() {
+    while (module.exports.ReceivedCommands.length>0) {
+        var command = module.exports.ReceivedCommands.shift();
+        ProcessCommand(command);
+    }
+}
+
+function ProcessCommand(/*CommandModule.Command*/command) {
+    RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.sendersPeer);
 }

@@ -1,5 +1,5 @@
 var CommandsController = require("CommandsControllerModule");
+var GameController = require("GameControllerModule");
 
-RTSession.getLogger().debug("before register commands");
 CommandsController.RegisterCommands();
-RTSession.getLogger().debug("after register commands");
+GameController.StartGameLoop();
