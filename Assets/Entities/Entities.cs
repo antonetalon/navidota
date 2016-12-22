@@ -7,9 +7,9 @@ public static class Entities {
 	private static long _maxId = 0;
 	private static List<Entity> _entities = new List<Entity>();
 	private static List<EntitySystem> _systems = new List<EntitySystem>();
-	public static void Init() {
-		_systems.Add(new MovingSystem());
-		_systems.Add(new MatchStartSystem());
+	public static void Init(List<EntitySystem> systems) {
+		foreach (var system in systems)
+			_systems.Add(system);
 		foreach (EntitySystem system in _systems)
 			system.OnStart();
 	}

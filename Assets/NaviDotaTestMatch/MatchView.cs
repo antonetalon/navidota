@@ -25,7 +25,7 @@ public class MatchView : MonoBehaviour {
 		if (!Physics.Raycast(ray, out hit))
 			return;
 		Vector2 targetPos = new Vector2(hit.point.x, hit.point.y);
-		MovingSystem.Instance.Send(targetPos);
+		InputControlSystem.Instance.Send(targetPos);
 	}
 	void UpdatePosition() {
 		if (_characterEntityId==-1)

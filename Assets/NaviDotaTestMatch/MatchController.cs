@@ -5,7 +5,11 @@ using UnityEngine;
 public class MatchController : MonoBehaviour {
 	[SerializeField] MatchView _view;
 	void Awake() {
-		Entities.Init();
+		Entities.Init(new List<EntitySystem>() {
+			new MatchStartSystem(),
+			new MovingSystem(),
+			new InputControlSystem()
+		});
 		_view.OnStartMatch();
 	}
 

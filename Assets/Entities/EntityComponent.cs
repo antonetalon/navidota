@@ -12,7 +12,8 @@ public abstract class EntityComponent {
 			return new MatchComponent();
 		if (t==typeof(PositionComponent))
 			return new PositionComponent();
-		
+		if (t==typeof(InputControlComponent))
+			return new InputControlComponent();
 		Debug.LogError("Component ctor not added for " + t.ToString());
 		return null;
 	}
