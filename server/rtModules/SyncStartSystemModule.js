@@ -1,6 +1,7 @@
 var Commands = require("CommandModule");
 var CommandCodes = require("CommandCodesModule");
 var CommandsController = require("CommandsControllerModule");
+var GameController = require("GameControllerModule");
 
 var EverybodyReadySent = false;
 var ReadyPlayers = [];
@@ -14,7 +15,7 @@ function SetReady(playersPeer) {
     if (ReadyPlayers.indexOf(playersPeer)!=-1 || EverybodyReadySent)
         return;
     ReadyPlayers.push(playersPeer);
-    RTSession.getLogger().debug("player ready peer="+playersPeer);
+    //RTSession.getLogger().debug("player ready peer="+playersPeer);
 }
 
 function EverybodyReady() {
@@ -26,12 +27,13 @@ function EverybodyReady() {
     }
     if (!notReadyExists)
         RTSession.getLogger().debug("everybody ready");
-    else
-        RTSession.getLogger().debug("not everybody ready");
+    //else
+    //    RTSession.getLogger().debug("not everybody ready");
     return !notReadyExists;
 }
 
 function SendAllPlayersReady() {
     EverybodyReadySent = true;
     CommandsController.Send(CommandCodes.CommandCodes.AllPlayersReady, null);
+    GameController.OnStartMatch();
 }

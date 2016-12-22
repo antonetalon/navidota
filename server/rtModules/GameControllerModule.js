@@ -1,8 +1,14 @@
 var CommandsController = require("CommandsControllerModule");
+var MatchController = require("MatchControllerModule");
+
+module.exports.OnStartSession = function() {
+    CommandsController.RegisterCommands();
+    RTSession.setInterval(GameLoopUpdate, GameLoopUpdateInterval);
+}
 
 var GameLoopUpdateInterval = 500;
-module.exports.StartGameLoop = function() {
-    RTSession.setInterval(GameLoopUpdate, GameLoopUpdateInterval);
+module.exports.OnStartMatch = function() {
+    MatchController.OnStartMatch();
 }
 
 function GameLoopUpdate() {

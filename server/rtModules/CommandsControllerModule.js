@@ -33,7 +33,7 @@ module.exports.ProcessCommands = function() {
 }
 
 function ProcessCommand(/*CommandModule.Command*/command) {
-    RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.SendersPeer);
+    //RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.SendersPeer);
     switch (command.OpCode) {
         case CommandCodes.CommandCodes.ReadyForMatch:SyncStartSystem.ProcessReadyForMatch(command); break;
     }
