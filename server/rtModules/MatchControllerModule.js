@@ -7,11 +7,11 @@ var InputControl = require("InputControlModule");
 module.exports.OnStartMatch = function() {
     RTSession.getLogger().debug("before systems creation");
     var match = Match.CreateSystem();
-    //RTSession.getLogger().debug("match created = " + JSON.stringify(match));
+    RTSession.getLogger().debug("match created = " + JSON.stringify(match));
     var moving = Moving.CreateSystem();
-    //RTSession.getLogger().debug("moving created = " + JSON.stringify(moving));
+    RTSession.getLogger().debug("moving created = " + JSON.stringify(moving));
     var inputControl = InputControl.CreateSystem();
-    //RTSession.getLogger().debug("inputControl created = " + JSON.stringify(inputControl));
+    RTSession.getLogger().debug("inputControl created = " + JSON.stringify(inputControl));
     var systemsList = [match, moving, inputControl];
     Entities.Init(systemsList);
 }

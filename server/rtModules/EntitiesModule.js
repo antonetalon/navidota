@@ -2,6 +2,9 @@ var Entity = require("EntityModule");
 var systems;
 var entities;
 var maxId;
+module.exports.GetEntities = function() {
+    return entities;
+}
 module.exports.Init = function(systemsList) {
     entities = [];
     systems = [];
@@ -12,6 +15,7 @@ module.exports.Init = function(systemsList) {
     // Start all systems.
     for (var i=0;i<systems.length;i++)
         systems[i].OnStart();
+    RTSession.getLogger().debug("systems started");
     // Log them all.
     var log = "systems = \n " + systems.length + "\n entities = \n " + entities.length;
     RTSession.getLogger().debug(log);

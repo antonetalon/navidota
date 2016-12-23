@@ -1,3 +1,10 @@
+var Entities = require("EntitiesModule");
+var Vector2 = require("Vector2Module");
+var Match = require("MatchModule");
+var Position = require("PositionModule");
+var Moving = require("MovingModule");
+var InputControl = require("InputControlModule");
+
 module.exports.CreateComponent = function() {
    return new Component();
 }
@@ -5,13 +12,6 @@ module.exports.CreateComponent = function() {
 module.exports.CreateSystem = function() {
    return new System();
 }
-
-var Entities = require("EntitiesModule");
-var Vector2 = require("Vector2Module");
-var Match = require("MatchModule");
-var Position = require("PositionModule");
-var Moving = require("MovingModule");
-var InputControl = require("InputControlModule");
 
 module.exports.CreateComponent = function() {
    return new Component();
@@ -29,15 +29,15 @@ function System() {
         // Add match.
         var match = Match.CreateComponent();
         Entities.AddEntity([match]);
-       // RTSession.getLogger().debug("match entity added");
+       //RTSession.getLogger().debug("match entity added");
         // Add character.
         var position = Position.CreateComponent();
-        position.Position = Vector2.Vector2(0, 0);
+        position.Position = Vector2.Create(0, 0);
         //RTSession.getLogger().debug("position created");
         var moving = Moving.CreateComponent();
         moving.IsMoving = false;
         moving.Speed = 1;
-       // RTSession.getLogger().debug("moving created");
+        //RTSession.getLogger().debug("moving created");
         var inputControl = InputControl.CreateComponent();
        // RTSession.getLogger().debug("input control created");
         Entities.AddEntity([position, moving, inputControl]);

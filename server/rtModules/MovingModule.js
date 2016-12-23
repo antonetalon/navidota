@@ -10,7 +10,7 @@ var Vector2 = require("Vector2Module");
 var Entity = require("EntityModule");
 
 function Component() {
-    this.Target = Vector2.Vector2(0, 0);
+    this.Target = Vector2.Create(0, 0);
     this.Speed = 0;
     this.IsMoving = false;
     this.AddToEntity = function(entity) {
@@ -24,9 +24,10 @@ module.exports.EntityFits = function(/*EntityModule.Entity*/entity) {
 
 function System() {
     this.OnStart = function() {
-       // RTSession.getLogger().debug("MovingSystem.OnStart");
+       //RTSession.getLogger().debug("MovingSystem.OnStart");
     };
     this.Update = function(entity) {
         // entity.Position - move towards entity.Moving.Target on entity.Moving.Speed* delta time. Stop when dist to pos is less eps=0.01
+        RTSession.getLogger().debug("MovingSystem.Update");
     }
 }

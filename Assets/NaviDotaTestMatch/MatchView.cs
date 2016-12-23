@@ -35,6 +35,7 @@ public class MatchView : MonoBehaviour {
 			return;
 		Vector2 targetPos = new Vector2(hit.point.x, hit.point.y);
 		InputControlSystem.Instance.Send(targetPos);
+		Debug.Log("target pos = " + targetPos.x.ToString() + "; " + targetPos.y.ToString());
 	}
 	void UpdatePosition() {
 		if (_characterEntityId==-1)

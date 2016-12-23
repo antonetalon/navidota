@@ -1,11 +1,15 @@
-module.exports.Vector2 = function newVec(x,y) {
-    newVec.x = x;
-    newVec.y = y;
-    newVec.LengthSqr = function() {
-        return newVec.x*newVec.x+newVec.y*newVec.y;
+module.exports.Create = function(x,y) {
+    return new Vector2(x,y);
+}
+
+function Vector2(x,y) {
+    this.x = x;
+    this.y = y;
+    this.LengthSqr = function() {
+        return this.x*this.x+this.y*this.y;
     }
-    newVec.Length = function() {
-        return sqrt(newVec.LengthSqr());
+    this.Length = function() {
+        return sqrt(this.LengthSqr());
     }
 }
 
