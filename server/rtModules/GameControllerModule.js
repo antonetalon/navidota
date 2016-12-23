@@ -1,5 +1,6 @@
 var CommandsController = require("CommandsControllerModule");
 var MatchController = require("MatchControllerModule");
+var Entities = require("EntitiesModule");
 
 module.exports.OnStartSession = function() {
     CommandsController.RegisterCommands();
@@ -13,4 +14,6 @@ module.exports.OnStartMatch = function() {
 
 function GameLoopUpdate() {
     CommandsController.ProcessCommands();
+    if (MatchController.GetMatchStarted())
+        MatchController.Update();
 }

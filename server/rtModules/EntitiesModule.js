@@ -28,3 +28,13 @@ module.exports.AddEntity = function(componentsList) {
         componentsList[i].AddToEntity(newEntity);
     entities.push(newEntity);
 }
+
+module.exports.Update = function() {
+    // Calling Update for all systems.
+    for (var i=0;i<systems.length;i++) {
+        for (var j=0;j<entities.length;j++) {
+            if (systems[i].EntityFits(entities[j]))
+                systems[i].Update(entities[j]);
+        }
+    }
+}

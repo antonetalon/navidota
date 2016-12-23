@@ -43,4 +43,10 @@ function System() {
         Entities.AddEntity([position, moving, inputControl]);
        // RTSession.getLogger().debug("character entity added");
     }
+    this.EntityFits = function(/*EntityModule.Entity*/entity) {
+        return false;
+    };
+    this.Update = function(entity) {
+        
+    }
 }

@@ -4,6 +4,11 @@ var Position = require("PositionModule");
 var Moving = require("MovingModule");
 var InputControl = require("InputControlModule");
 
+var matchStarted = false;
+module.exports.GetMatchStarted = function() {
+    return matchStarted;
+}
+
 module.exports.OnStartMatch = function() {
     RTSession.getLogger().debug("before systems creation");
     var match = Match.CreateSystem();
@@ -14,4 +19,9 @@ module.exports.OnStartMatch = function() {
     RTSession.getLogger().debug("inputControl created = " + JSON.stringify(inputControl));
     var systemsList = [match, moving, inputControl];
     Entities.Init(systemsList);
+    matchStarted = true;
+}
+
+module.exports.Update = function() {
+    Entities.Update();
 }
