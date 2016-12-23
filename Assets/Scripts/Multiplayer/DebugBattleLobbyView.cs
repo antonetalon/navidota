@@ -29,14 +29,17 @@ namespace Multiplayer {
 			GUILayout.Label("State = " + GameController.Instance.Lobby.State.ToString());
 			switch (GameController.Instance.Lobby.State) {
 				case StateEnum.Idle:
-					// Lobby match can be searched.
-					if (GUILayout.Button("Find match", DebugOnGUIAuth.ProperHeight)) {
-						_waitingServerResponse = true;
-						LobbyController.StartSearchMatch((success)=>{
-							_waitingServerResponse = false;
-							Debug.Log("Start search success = " + success.ToString());
-						});
+					if (!_isPlayingSinglePlayer) {
+						// Lobby match can be searched.
+						if (GUILayout.Button("Find match", DebugOnGUIAuth.ProperHeight)) {
+							_waitingServerResponse = true;
+							LobbyController.StartSearchMatch((success)=>{
+								_waitingServerResponse = false;
+								Debug.Log("Start search success = " + success.ToString());
+							});
+						}
 					}
+					UpdateSinglePlayerGame();					
 					break;
 				case StateEnum.SearchingMatch:
 					// Lobby match search.
@@ -69,12 +72,31 @@ namespace Multiplayer {
 					GUILayout.Label("Match is currently playing..." , DebugOnGUIAuth.ProperHeight);
 					foreach (var player in GameController.Instance.Lobby.Players)
 						GUILayout.Label("player name = " + player.Name);
-					if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight))
+					if (!MatchController.Instance.IsPlaying)
+						MatchController.Instance.StartMatch();
+					if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight)) {
 						LobbyController.LeaveMatch();
+						MatchController.Instance.EndMatch();
+					}
 					break;
 			}
 
 			_prevState = GameController.Instance.Lobby.State;
+		}
+
+		static bool _isPlayingSinglePlayer;
+		static void UpdateSinglePlayerGame() {
+			if (!_isPlayingSinglePlayer) {
+				if (GUILayout.Button("Start single player match")) {
+					_isPlayingSinglePlayer = true;
+					MatchController.Instance.StartMatch();
+				}
+			} else {
+				if (GUILayout.Button("Leave single player match")) {
+					_isPlayingSinglePlayer = false;
+					MatchController.Instance.EndMatch();
+				}
+			}
 		}
 	}
 

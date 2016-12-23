@@ -6,14 +6,23 @@ public class MatchView : MonoBehaviour {
 
 	[SerializeField] Transform _characterView;
 	long _characterEntityId = -1;
+	bool _isPlaying;
 	public void OnStartMatch() {
+		gameObject.SetActive(true);
+		_isPlaying = true;
 		Entity character = null;
 		List<Entity> characters = Entities.Find(typeof(PositionComponent), typeof(MovingComponent));
 		foreach (var item in characters)
 			character = item;
 		_characterEntityId = character.Id;
 	}
+	public void OnEndMatch() {
+		gameObject.SetActive(false);
+		_isPlaying = false;
+	}
 	void Update() {
+		if (!_isPlaying)
+			return;
 		UpdateSending();
 		UpdatePosition();
 	}
