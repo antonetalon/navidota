@@ -11,4 +11,13 @@ function Entity(id) {
         }
         return true;
     }
+    this.ComponentNames = function() {
+        var names = [];
+        for (var name in this) {
+            if (name=="Id")
+                continue;
+            names.push(name);
+        }
+        return names;
+    }
 }

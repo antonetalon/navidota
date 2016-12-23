@@ -1,4 +1,5 @@
 var Entity = require("EntityModule");
+var Changes = require("ChangesModule");
 var systems;
 var entities;
 var maxId;
@@ -6,6 +7,7 @@ module.exports.GetEntities = function() {
     return entities;
 }
 module.exports.Init = function(systemsList) {
+    Changes.Init();
     entities = [];
     systems = [];
     maxId = 0;
@@ -30,6 +32,7 @@ module.exports.AddEntity = function(componentsList) {
 }
 
 module.exports.Update = function() {
+    Changes.SavePrevComponents(entities);
     // Calling Update for all systems.
     for (var i=0;i<systems.length;i++) {
         for (var j=0;j<entities.length;j++) {
@@ -37,4 +40,5 @@ module.exports.Update = function() {
                 systems[i].Update(entities[j]);
         }
     }
+    Changes.CalcComponentsChange(entities);
 }

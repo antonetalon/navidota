@@ -42,7 +42,7 @@ function System() {
         } else {
             toTarget = Vector2.Multiply(toTarget, coveredLength/distToTarget);
             entity.Position.Position = Vector2.Add(entity.Position.Position, toTarget);
-            RTSession.getLogger().debug("Moved to pos x="+entity.Position.Position.x+"; "+entity.Position.Position.y);
+            //RTSession.getLogger().debug("Moved to pos x="+entity.Position.Position.x+"; "+entity.Position.Position.y);
         }
     }
 }

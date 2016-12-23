@@ -2,6 +2,8 @@ var Commands = require("CommandModule");
 var Vector2 = require("Vector2Module");
 var Entities = require("EntitiesModule");
 
+var prevEntities;
+
 module.exports.CreateComponent = function() {
    return new Component();
 }
