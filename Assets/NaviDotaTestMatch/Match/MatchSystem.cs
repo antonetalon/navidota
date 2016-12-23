@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class MatchStartSystem : EntitySystem {
+public class MatchSystem : EntitySystem {
 
-	public MatchStartSystem() : base(new Type[] {} ) { }
+	public MatchSystem() : base(new Type[] {} ) { }
 	public override void OnStart () {
 		Entities.AddEntity(typeof(MatchComponent));
 		Entity character = Entities.AddEntity(typeof(PositionComponent), typeof(MovingComponent), typeof(InputControlComponent));

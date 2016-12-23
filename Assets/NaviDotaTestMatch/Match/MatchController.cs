@@ -6,7 +6,7 @@ public class MatchController : MonoBehaviour {
 	[SerializeField] MatchView _view;
 	void Awake() {
 		Entities.Init(new List<EntitySystem>() {
-			new MatchStartSystem(),
+			new MatchSystem(),
 			new MovingSystem(),
 			new InputControlSystem()
 		});
