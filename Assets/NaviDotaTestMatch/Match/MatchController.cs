@@ -10,12 +10,18 @@ public class MatchController : MonoBehaviour {
 	void Awake() {
 		Instance = this;
 	}
-	public void StartMatch() {
-		Entities.Init(new List<EntitySystem>() {
+	public void StartMatch(bool multiplayer) {
+		GameSparksRTManager.Instance.SetCommandsFactory(new NaviDotaCommandsParser());
+		var systems = new List<EntitySystem>() {
 			new MatchSystem(),
-			new MovingSystem(),
-			new InputControlSystem()
-		});
+			new MovingSystem()
+		};
+		if (multiplayer) {
+			systems.Add(new NetworkInputSystem());
+		} else {
+			systems.Add(new InputControlSystem());
+		}
+		Entities.Init(systems);
 		_view.OnStartMatch();
 		_isPlaying = true;
 	}

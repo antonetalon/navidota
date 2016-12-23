@@ -73,7 +73,7 @@ namespace Multiplayer {
 					foreach (var player in GameController.Instance.Lobby.Players)
 						GUILayout.Label("player name = " + player.Name);
 					if (!MatchController.Instance.IsPlaying)
-						MatchController.Instance.StartMatch();
+						MatchController.Instance.StartMatch(true);
 					if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight)) {
 						LobbyController.LeaveMatch();
 						MatchController.Instance.EndMatch();
@@ -89,7 +89,7 @@ namespace Multiplayer {
 			if (!_isPlayingSinglePlayer) {
 				if (GUILayout.Button("Start single player match")) {
 					_isPlayingSinglePlayer = true;
-					MatchController.Instance.StartMatch();
+					MatchController.Instance.StartMatch(false);
 				}
 			} else {
 				if (GUILayout.Button("Leave single player match")) {

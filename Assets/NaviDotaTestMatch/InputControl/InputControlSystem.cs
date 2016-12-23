@@ -8,7 +8,7 @@ public class InputControlSystem : EntitySystem {
 	public InputControlSystem() : base(new Type[] { typeof(InputControlComponent), typeof(MovingComponent) }) {
 		Instance = this;
 	}
-	public void Send(Vector2 target) {
+	public virtual void Send(Vector2 target) {
 		foreach (Entity entity in ProcessedEntities()) {
 			MovingComponent moving = entity.GetComponent<MovingComponent>();
 			moving.IsMoving = true;
