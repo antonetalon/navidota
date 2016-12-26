@@ -112,7 +112,7 @@ function ComponentChange(entityId, isRemoved, prevComponent, currComponent) {
     //if (isRemoved)
     //    log = true;
     //RTSession.getLogger().debug("before ComponentChange creation");
-    if (isRemoved)
+    //if (isRemoved)
     //RTSession.getLogger().debug("ComponentChange params entityId="+entityId+" isRemoved = "+isRemoved+
     //    " prev="+JSON.stringify(prevComponent)+ " curr="+JSON.stringify(currComponent));
     this.EntityId = entityId;
