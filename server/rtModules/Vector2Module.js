@@ -24,3 +24,7 @@ module.exports.Subtract = function(/*Vector2Module.Vector2*/a, /*Vector2Module.V
 module.exports.Multiply = function(/*Vector2Module.Vector2*/a, /*float*/mul) {
     return new module.exports.Create(a.x*mul, a.y*mul);
 }
+
+module.exports.Equals = function(/*Vector2Module.Vector2*/a, /*Vector2Module.Vector2*/b) {
+    return (a.x==b.x) && (a.y==b.y);
+}

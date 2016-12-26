@@ -1,8 +1,13 @@
-module.exports.Clone = function(obj) {
+module.exports.Clone = function me(obj) {
     if (obj === null || typeof obj !== 'object')
         return obj; 
-    var temp = obj.constructor(); // give temp the original obj's constructor
+    //RTSession.getLogger().debug("cloning obj = " + JSON.stringify(obj));
+    var temp;
+    if (Array.isArray(obj))
+        temp = [];
+    else
+        temp = {};
     for (var key in obj)
-        temp[key] = clone(obj[key]); 
+        temp[key] = me(obj[key]); 
     return temp;
 }

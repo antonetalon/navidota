@@ -17,7 +17,7 @@ function Entity(id) {
     this.ComponentNames = function() {
         var names = [];
         for (var name in this) {
-            if (name=="Id")
+            if (name=="Id" || name=="HasComponents" || name=="ComponentNames")
                 continue;
             names.push(name);
         }

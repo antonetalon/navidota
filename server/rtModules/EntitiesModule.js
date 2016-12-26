@@ -41,11 +41,11 @@ module.exports.AddEntity = function(componentsList) {
 
 module.exports.AddComponent = function(entityId, component) {
     var entity = module.exports.GetEntity(entityId);
-    AddComponent(enitty, component);
+    AddComponent(entity, component);
 }
 
 function AddComponent(entity, component) {
-    RTSession.getLogger().debug("start adding component");
+    //RTSession.getLogger().debug("start adding component");
     var name = Component.GetName(component.Type);
     //RTSession.getLogger().debug("compoent name = " + name);
     if (entity[name]!=undefined) {
@@ -58,17 +58,18 @@ function AddComponent(entity, component) {
 }
 
 module.exports.RemoveEntity = function(id) {
-    var removedEntity = module.exports.GetEntity(maxId);
+    //RTSession.getLogger().debug("remove entity called");
+    var removedEntity = module.exports.GetEntity(id);
     if (removedEntity == null) {
         RTSession.getLogger().debug("Cant remove entity with id = "+id+" - it does not exist");
         return;
     }
-    
+    //RTSession.getLogger().debug("removed entity found, prev length = " + entities.length);
     var componentNames = removedEntity.ComponentNames();
     for (var i=0;i<componentNames.length;i++)
         RemoveComponent(removedEntity, componentNames[i]);
     entities.splice(entities.indexOf(removedEntity), 1);
-    return maxId;
+    //RTSession.getLogger().debug("entity removed from array, new length = " + entities.length);
 }
 
 module.exports.RemoveComponent = function(entityId, componentName) {
@@ -89,13 +90,12 @@ function RemoveComponent(entity, componentName) {
 module.exports.GetEntity = function(id) {
     for (var i=0;i<entities.length;i++) {
         if (entities[i].Id == id)
-            return entity;
+            return entities[i];
     }
     return null;
 }
 
 module.exports.Update = function() {
-    //Changes.SavePrevComponents(entities);
     // Calling Update for all systems.
     for (var i=0;i<systems.length;i++) {
         for (var j=0;j<entities.length;j++) {
@@ -103,5 +103,6 @@ module.exports.Update = function() {
                 systems[i].Update(entities[j]);
         }
     }
-    //Changes.CalcComponentsChange(entities);
+    Changes.CalcComponentsChange(entities);
+    Changes.SavePrevComponents(entities);
 }
