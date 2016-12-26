@@ -8,6 +8,7 @@ public static class Entities {
 	private static List<Entity> _entities = new List<Entity>();
 	private static List<EntitySystem> _systems = new List<EntitySystem>();
 	public static void Init(List<EntitySystem> systems) {
+		EntityComponent.Init();
 		_maxId = 0;
 		_entities.Clear();
 		_systems.Clear();

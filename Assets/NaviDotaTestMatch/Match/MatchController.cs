@@ -22,11 +22,13 @@ public class MatchController : MonoBehaviour {
 			systems.Add(new InputControlSystem());
 		}
 		Entities.Init(systems);
+		SyncChangesController.OnStartMatch();
 		_view.OnStartMatch();
 		_isPlaying = true;
 	}
 
 	public void EndMatch() {
+		SyncChangesController.OnEndMatch();
 		_view.OnEndMatch();
 		_isPlaying = false;
 	}

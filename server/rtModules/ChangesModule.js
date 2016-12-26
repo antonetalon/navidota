@@ -1,6 +1,7 @@
 var Utils = require("UtilsModule");
 var Component = require("ComponentModule");
 var Vector2 = require("Vector2Module");
+var SyncChanges = require("SyncChangesModule");
 var prevEntities;
 var changes;
 
@@ -56,7 +57,11 @@ module.exports.CalcComponentsChange = function(currEntities) {
             changes.push(change);
         }
     }
+    for (i=0;i<changes.length;i++)
+        delete changes[i].EmptyChange;
     LogChanges();
+    if (changes.length>0)
+        SyncChanges.SendChanges(changes);
     //RTSession.getLogger().debug("after calc change");
 }
 

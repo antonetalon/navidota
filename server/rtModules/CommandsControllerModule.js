@@ -7,6 +7,7 @@ module.exports.Send = function(opCode, rtData) {
     if (rtData==null)
         rtData = RTSession.newData();
     RTSession.newPacket().setOpCode(opCode).setData(rtData).send();
+    RTSession.getLogger().debug("sent command " + opCode);
 }
 
 module.exports.RegisterCommands = function() {
