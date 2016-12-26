@@ -1,3 +1,6 @@
+var Component = require("ComponentModule");
+var Entities = require("EntitiesModule");
+
 module.exports.CreateEntity = function(id) {
     return new Entity(id);
 }

@@ -1,6 +1,6 @@
+var Comp = require("ComponentModule");
 var Entities = require("EntitiesModule");
 var Vector2 = require("Vector2Module");
-var Match = require("MatchModule");
 var Position = require("PositionModule");
 var Moving = require("MovingModule");
 var InputControl = require("InputControlModule");
@@ -18,18 +18,17 @@ module.exports.CreateComponent = function() {
 }
 
 function Component() {
-    this.AddToEntity = function(entity) {
-        entity.Match = this;
-    }
+    this.Type = 1;
 }
 
 function System() {
      this.OnStart = function() {
-        //RTSession.getLogger().debug("MatchSystem.OnStart");
+       // RTSession.getLogger().debug("MatchSystem.OnStart");
         // Add match.
-        var match = Match.CreateComponent();
+        var match = module.exports.CreateComponent();
+        RTSession.getLogger().debug("match module obj created");
         Entities.AddEntity([match]);
-       //RTSession.getLogger().debug("match entity added");
+        //RTSession.getLogger().debug("match entity added");
         // Add character.
         var position = Position.CreateComponent();
         position.Position = Vector2.Create(0, 0);
@@ -37,11 +36,12 @@ function System() {
         var moving = Moving.CreateComponent();
         moving.IsMoving = false;
         moving.Speed = 1;
-        //RTSession.getLogger().debug("moving created");
+        RTSession.getLogger().debug("moving created");
         var inputControl = InputControl.CreateComponent();
-       // RTSession.getLogger().debug("input control created");
+        RTSession.getLogger().debug("input control created");
         Entities.AddEntity([position, moving, inputControl]);
-       // RTSession.getLogger().debug("character entity added");
+        RTSession.getLogger().debug("character entity added");
+       //TestEntitiesChange();
     }
     this.EntityFits = function(/*EntityModule.Entity*/entity) {
         return false;
@@ -49,4 +49,31 @@ function System() {
     this.Update = function(entity) {
         
     }
+}
+
+
+var testEntityId;
+function TestEntitiesChange() {
+    RTSession.setTimeout(function(){
+        // Add entity.
+        var position = Position.CreateComponent();
+        position.Position = Vector2.Create(1, 1);
+        testEntityId = Entities.AddEntity([position]);
+    }, 1000);
+    RTSession.setTimeout(function(){
+        // Add component.
+        var moving = Moving.CreateComponent();
+        moving.IsMoving = false;
+        moving.Speed = 1;
+        Entities.AddComponent(testEntityId, moving);
+    }, 2000);
+    RTSession.setTimeout(function(){
+        // Remove component.
+        var movingComponentType = Component.GetType("Moving");
+        Entities.RemoveComponent(testEntityId, movingComponentType);
+    }, 3000);
+    RTSession.setTimeout(function(){
+        // Remove entity.
+        Entities.RemoveEntity(testEntityId);
+    }, 4000);
 }

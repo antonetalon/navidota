@@ -13,9 +13,7 @@ function Component() {
     this.Target = Vector2.Create(0, 0);
     this.Speed = 0;
     this.IsMoving = false;
-    this.AddToEntity = function(entity) {
-        entity.Moving = this;
-    }
+    this.Type = 3;
 }
 
 var eps = 0.01;

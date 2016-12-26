@@ -19,7 +19,7 @@ module.exports.ReceivedCommands = [];
 
 function AddCommand(opCode) {
     RTSession.onPacket(opCode, function(packet){
-        RTSession.getLogger().debug("received command " + opCode);
+        //RTSession.getLogger().debug("received command " + opCode);
         var time = new Date().getTime();
         var sender = packet.getSender().getPeerId();
         var command = new Commands.Command(opCode, time, sender, packet.getData());
@@ -36,7 +36,7 @@ module.exports.ProcessCommands = function() {
 }
 
 function ProcessCommand(/*CommandModule.Command*/command) {
-    RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.SendersPeer);
+    //RTSession.getLogger().debug("Processing command " + command.OpCode + " from player " + command.SendersPeer);
     switch (command.OpCode) {
         case CommandCodes.CommandCodes.ReadyForMatch:SyncStartSystem.ProcessReadyForMatch(command); break;
         case CommandCodes.CommandCodes.Move:InputControl.ProcessMoveCommand(command); break;

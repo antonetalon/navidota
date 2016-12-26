@@ -10,14 +10,12 @@ module.exports.CreateComponent = function() {
 
 var instance;
 module.exports.CreateSystem = function() {
-    instance = new System();
+    instance = new System();Component
    return instance;
 }
 
 function Component() {
-    this.AddToEntity = function(entity) {
-        entity.InputControl = this;
-    }
+    this.Type = 4;
 }
 
 module.exports.ProcessMoveCommand = function(/*CommandModule.Command*/command) {
