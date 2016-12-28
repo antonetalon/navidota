@@ -79,10 +79,12 @@ namespace Multiplayer {
 		private static void OnRTMatchConnected(bool success) {
 			Debug.Log("Match connected success = " + success.ToString());
 			GameController.Instance.Lobby.OnRTSessionConnected();
+			Timer.OnMatchConnected ();
 		}
 		private static void OnRTMatchDisConnected() {
 			Debug.Log("Match disconnected");
 			GameController.Instance.Lobby.OnRTSessionDisconnected();
+			Timer.OnMatchDisconnected();
 		}
 		public static void BecomeReadyForGame() {
 			Debug.Log("Became ready for game");
@@ -95,6 +97,10 @@ namespace Multiplayer {
 		}
 		public static void Update() {
 			UpdateSearchTimeout();
+			if (GameController.Instance.Lobby.State == StateEnum.GettingReady || GameController.Instance.Lobby.State == StateEnum.IsPlaying
+				|| GameController.Instance.Lobby.State == StateEnum.WaitingOtherPlayers) {
+				Timer.Update (Time.deltaTime);
+			}
 		}
 		private static void UpdateSearchTimeout() {
 			if (GameController.Instance.Lobby.State != StateEnum.SearchingMatch)

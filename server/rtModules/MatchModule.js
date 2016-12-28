@@ -41,7 +41,7 @@ function System() {
         //RTSession.getLogger().debug("input control created");
         Entities.AddEntity([position, moving, inputControl]);
         //RTSession.getLogger().debug("character entity added");
-       TestEntitiesChange();
+       //TestEntitiesChange();
     }
     this.EntityFits = function(/*EntityModule.Entity*/entity) {
         return false;

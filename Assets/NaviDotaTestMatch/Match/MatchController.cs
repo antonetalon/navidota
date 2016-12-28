@@ -22,6 +22,7 @@ public class MatchController : MonoBehaviour {
 			systems.Add(new SinglePlayerMatchSystem());
 			systems.Add(new InputControlSystem());
 		}
+		LagController.OnMatchStarted ();
 		Entities.Init(systems);
 		SyncChangesController.OnStartMatch();
 		_view.OnStartMatch();
@@ -29,6 +30,7 @@ public class MatchController : MonoBehaviour {
 	}
 
 	public void EndMatch() {
+		LagController.OnMatchFinished ();
 		SyncChangesController.OnEndMatch();
 		_view.OnEndMatch();
 		_isPlaying = false;
@@ -38,5 +40,6 @@ public class MatchController : MonoBehaviour {
 		if (!_isPlaying)
 			return;
 		Entities.Update();
+		LagController.Update ();
 	}
 }

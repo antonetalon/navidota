@@ -70,6 +70,7 @@ namespace Multiplayer {
 				case StateEnum.IsPlaying:
 					// Match is played.
 					GUILayout.Label("Match is currently playing..." , DebugOnGUIAuth.ProperHeight);
+					GUILayout.Label("lag = " + LagController.Lag.ToString(), DebugOnGUIAuth.ProperHeight);
 					foreach (var player in GameController.Instance.Lobby.Players)
 						GUILayout.Label("player name = " + player.Name);
 					if (!MatchController.Instance.IsPlaying)

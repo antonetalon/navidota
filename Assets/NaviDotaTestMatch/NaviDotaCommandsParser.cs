@@ -8,5 +8,7 @@ public class NaviDotaCommandsParser : DefaultCommandsParser {
 	public NaviDotaCommandsParser() : base() {
 		AddCommandParser(3, (data)=>{ return new CommandMove(Vector2.zero); });
 		AddCommandParser(4, (data)=>{ return new CommandSyncData(data); });
+		AddCommandParser (5, (data) => { return new SyncRequestCommand (-1); });
+		AddCommandParser (6, (data) => { return new SyncResponseCommand (data); });
 	}
 }
