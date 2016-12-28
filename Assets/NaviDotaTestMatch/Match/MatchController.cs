@@ -13,12 +13,13 @@ public class MatchController : MonoBehaviour {
 	public void StartMatch(bool multiplayer) {
 		GameSparksRTManager.Instance.SetCommandsFactory(new NaviDotaCommandsParser());
 		var systems = new List<EntitySystem>() {
-			new MatchSystem(),
 			new MovingSystem()
 		};
 		if (multiplayer) {
+			systems.Add(new NetworkMatchSystem());
 			systems.Add(new NetworkInputSystem());
 		} else {
+			systems.Add(new SinglePlayerMatchSystem());
 			systems.Add(new InputControlSystem());
 		}
 		Entities.Init(systems);

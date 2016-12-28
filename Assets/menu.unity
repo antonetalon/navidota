@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3ad0db902957024082841e0a9c0d587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterView: {fileID: 196966658}
+  _characterViewPrefab: {fileID: 196966658}
 --- !u!4 &491722355
 Transform:
   m_ObjectHideFlags: 0

@@ -137,20 +137,20 @@ function ComponentChange(entityId, isRemoved, prevComponent, currComponent) {
             if (key=="Type")
                 change[key] = currComponent[key];
             else if (typeof(currComponent[key]) == "number") {
-                change[key] = currComponent[key] - prevComponent[key];
+                change[key] = currComponent[key];// - prevComponent[key];
                 if (currComponent[key]!=prevComponent[key]) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("number changed");
                 }
             } else if (typeof(currComponent[key]) == "object") {
                 // Vector2.
-                change[key] = Vector2.Subtract(currComponent[key], prevComponent[key]);
+                change[key] = currComponent[key];//Vector2.Subtract(currComponent[key], prevComponent[key]);
                 if (!Vector2.Equals(currComponent[key], prevComponent[key])) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("vector changed");
                 }
             } else if (typeof(currComponent[key]) == "boolean") {
-                change[key] = !!(currComponent[key]^prevComponent[key]); // Logical xor mimic.
+                change[key] = currComponent[key];//!!(currComponent[key]^prevComponent[key]); // Logical xor mimic.
                 if (currComponent[key]!=prevComponent[key]) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("bool changed");
