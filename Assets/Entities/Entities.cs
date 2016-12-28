@@ -53,6 +53,13 @@ public static class Entities {
 		AddEntity(entity);
 		return entity;
 	}
+	public static Entity AddEntityFromSync(long id, EntityComponent newComponent) {
+		if (id > _maxId)
+			_maxId = id;
+		Entity entity = new Entity(id, new List<EntityComponent>() { newComponent });
+		AddEntity(entity);
+		return entity;
+	}
 	private static void AddEntity(Entity entity) {
 		_entities.Add(entity);
 		foreach (EntitySystem system in _systems) {
@@ -69,6 +76,30 @@ public static class Entities {
 			if (entity.HasComponents(system.RequiredComponents) && system.RequiresComponent(addedComponent))
 				system.OnAdded(entity);
 		}
+	}
+	public static void OnComponentRemoved(Entity entity, Type removedComponent) {
+		foreach (EntitySystem system in _systems) {
+			bool requiresRemoved = false;
+			for (int i = 0; i < system.RequiredComponents.Length; i++) {
+				if (system.RequiredComponents [i] == removedComponent) {
+					requiresRemoved = true;
+					break;
+				}
+			}
+			if (!requiresRemoved)
+				continue;
+			bool belongedToSystem = true;
+			for (int i = 0; i < system.RequiredComponents.Length; i++) {
+				if (system.RequiredComponents [i] != removedComponent && entity.GetComponent (system.RequiredComponents [i]) == null) {
+					belongedToSystem = false;
+					break;
+				}
+			}
+			if (belongedToSystem)
+				system.OnRemoved(entity);
+		}
+		if (entity.Empty)
+			_entities.Remove (entity);
 	}
 	public static void Update() {
 		foreach (EntitySystem system in _systems) {

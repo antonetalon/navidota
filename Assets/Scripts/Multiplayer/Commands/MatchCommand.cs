@@ -8,4 +8,8 @@ public abstract class MatchCommand {
 	public MatchCommand(RTData data) {
 		this.Data = data;
 	}
+	public override string ToString ()
+	{
+		return GetType ().ToString ();
+	}
 }

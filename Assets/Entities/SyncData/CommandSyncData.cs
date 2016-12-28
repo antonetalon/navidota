@@ -18,4 +18,8 @@ public class CommandSyncData : MatchCommand {
 		Change = new ComponentChange(entityId, isRemoved, change);
 	}
 	public readonly ComponentChange Change;
+	public override string ToString ()
+	{
+		return base.ToString() + " " + Change.Change.GetType().ToString();
+	}
 }

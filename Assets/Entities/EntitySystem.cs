@@ -26,4 +26,5 @@ public abstract class EntitySystem {
 	public virtual void OnStart() { }
 	public virtual void Update(Entity entity) {}
 	public virtual void OnAdded(Entity entity) {}
+	public virtual void OnRemoved(Entity entity) {}
 }

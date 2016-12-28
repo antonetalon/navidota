@@ -84,7 +84,7 @@ public class GameSparksRTManager : MonoBehaviour {
 	private List<int> _lastReceivedMessageIds;
 	public event Action<MatchCommand> OnCommandReceived;
 	private void OnPacketReceived(RTPacket _packet){
-		Debug.Log("Received RT packet, opCode = " + _packet.OpCode);
+		//Debug.Log("Received RT packet, opCode = " + _packet.OpCode);
 		/*int messageId = _packet.OpCode / MaxCommandId;
 		int command = messageId % MaxCommandId;
 		//		Debug.LogFormat ("received command {0} with messageid {1}", commandId, messageId);
@@ -122,6 +122,7 @@ public class GameSparksRTManager : MonoBehaviour {
 	/// <param name="data">Data.</param>
 	private void OnReliableDataReceived(int opCode, RTData data) {
 		MatchCommand command = _commandsParser.ParseCommand(opCode, data);
+		Debug.Log("Received command " + command.ToString());
 		if (OnCommandReceived!=null)
 			OnCommandReceived(command);
 	}
@@ -150,6 +151,7 @@ public class GameSparksRTManager : MonoBehaviour {
 			Debug.LogError("opcode not found for command " + command.ToString());
 			return;
 		}
+		Debug.Log ("Sent command " + command.ToString());
 		SendDataReliable(opCode, command.Data);
 	}
 	private void SendDataReliable (int opCode, RTData data) {

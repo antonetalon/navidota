@@ -59,7 +59,7 @@ namespace Multiplayer {
 					// Getting ready.
 					GUILayout.Label("preparing resources, getting ready...", DebugOnGUIAuth.ProperHeight);
 					if (_prevState != StateEnum.GettingReady)
-						_remainingGettingReadyTime = Random.value*3+2;			
+						_remainingGettingReadyTime = Random.value*1+1;			
 					if (_remainingGettingReadyTime<0)
 						LobbyController.BecomeReadyForGame();
 					GUILayout.Label(Mathf.RoundToInt(_remainingGettingReadyTime).ToString(), DebugOnGUIAuth.ProperHeight);

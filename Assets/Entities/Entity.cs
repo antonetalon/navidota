@@ -5,23 +5,48 @@ using UnityEngine;
 
 public class Entity {
 	public readonly long Id;
-	public Entity(long id, params Type[] types) {
+	public Entity(long id, params Type[] types):this(id, CreateDefaultComponents(types)) { }
+	private static IEnumerable<EntityComponent> CreateDefaultComponents(Type[] types) {
+		List<EntityComponent> components = new List<EntityComponent> ();
+		for (int i = 0; i < types.Length; i++)
+			components.Add (EntityComponent.Create (types [i]));
+		return components;
+	}
+	public Entity(long id, IEnumerable<EntityComponent> components) {
 		this.Id = id;
 		_components = new List<EntityComponent>();
-		foreach (Type component in types)
+		foreach (EntityComponent component in components)
 			AddComponentPrivate(component);
 	}
 	List<EntityComponent> _components;
 	public void AddComponent(Type t) {
-		AddComponentPrivate(t);
-		Entities.OnComponentAdded(this, t);
+		var component = EntityComponent.Create (t);
+		AddComponent (t);
 	}
-	private void AddComponentPrivate(Type t) {
-		if (!t.IsSubclassOf(typeof(EntityComponent))) {
-			Debug.LogError("Should add only EntityComponents to entities");
-			return;
+	public void AddComponent(EntityComponent component) {
+		AddComponentPrivate(component);
+		Entities.OnComponentAdded(this, component.GetType());
+	}
+	public bool RemoveComponent(Type t) {
+		EntityComponent removedComponent = null;
+		foreach (var currComp in _components) {
+			if (currComp.GetType () == t) {
+				removedComponent = currComp;
+				break;
+			}
 		}
-		EntityComponent component = EntityComponent.Create(t);
+		if (removedComponent == null)
+			return false;
+		_components.Remove (removedComponent);
+		Entities.OnComponentRemoved(this, t);
+		return true;
+	}
+	private void AddComponentPrivate(EntityComponent component) {
+		//if (!t.IsSubclassOf(typeof(EntityComponent))) {
+		//	Debug.LogError("Should add only EntityComponents to entities");
+		//	return;
+		//}
+		//EntityComponent component = EntityComponent.Create(t);
 		if (component!=null)
 			_components.Add(component);
 	}
@@ -43,4 +68,5 @@ public class Entity {
 		}
 		return true;
 	}
+	public bool Empty { get { return _components.Count == 0; } }
 }

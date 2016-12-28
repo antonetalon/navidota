@@ -20,7 +20,7 @@ module.exports.ReceivedCommands = [];
 
 function AddCommand(opCode) {
     RTSession.onPacket(opCode, function(packet){
-        //RTSession.getLogger().debug("received command " + opCode);
+        RTSession.getLogger().debug("received command " + opCode);
         var time = new Date().getTime();
         var sender = packet.getSender().getPeerId();
         var command = new Commands.Command(opCode, time, sender, packet.getData());

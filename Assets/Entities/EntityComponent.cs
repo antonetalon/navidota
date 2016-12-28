@@ -85,6 +85,23 @@ public abstract class EntityComponent {
 		for (int i=0;i<stringFieldsCount;i++)
 			_strings.Add(string.Empty);
 	}
+
+	public void AddChange(EntityComponent change) {
+		bool componentsAddable = _numbers.Count == change._numbers.Count && _vectors.Count == change._vectors.Count && _bools.Count == change._bools.Count && _strings.Count == change._strings.Count;
+		if (!componentsAddable) {
+			Debug.LogError ("Change to component must be the same type as a component");
+			return;
+		}
+		for (int i = 0; i < _numbers.Count; i++)
+			_numbers [i] = change._numbers [i];
+		for (int i = 0; i < _vectors.Count; i++)
+			_vectors [i] = change._vectors [i];
+		for (int i = 0; i < _bools.Count; i++)
+			_bools [i] = change._bools [i];
+		for (int i = 0; i < _strings.Count; i++)
+			_strings [i] = change._strings [i];
+	}
+
 	public override string ToString () {
 		return string.Format("numbers=[{0}], vecs=[{1}], bools=[{2}], strings=[{3}]", ListJoin<float>(_numbers), ListJoin<Vector2>(_vectors), ListJoin<bool>(_bools), ListJoin<string>(_strings));
 	}
