@@ -5,6 +5,7 @@ var GameController = require("GameControllerModule");
 
 var EverybodyReadySent = false;
 var ReadyPlayers = [];
+var PlayersCountForMatch = 2;
 module.exports.ProcessReadyForMatch = function(/*CommandModule.Command*/command) {
     SetReady(command.SendersPeer);
     if (EverybodyReady() && !EverybodyReadySent)
@@ -19,6 +20,8 @@ function SetReady(playersPeer) {
 }
 
 function EverybodyReady() {
+    if (RTSession.getPlayers().length<PlayersCountForMatch)
+        return false;
     var notReadyExists = false;
     for (var i=0;i<RTSession.getPlayers().length;i++) {
         var peer = RTSession.getPlayers()[i].getPeerId();
