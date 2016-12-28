@@ -17,7 +17,8 @@ public class SyncChangesController {
 			return;	
 		//Debug.LogFormat("Sync received, type = {0}, id={1}, del={2}, change={3}", command.Change.Change.GetType().ToString(),
 		//	command.Change.EntityId, command.Change.IsRemoved, command.Change.Change.ToString());
-		ApplyChange(command.Change);
+		foreach (var change in command.Changes)
+			ApplyChange(change);
 	}
 	static void ApplyChange(ComponentChange change) {
 		Entity entity = Entities.Find (change.EntityId);

@@ -8,6 +8,17 @@ public class CommandSyncData : MatchCommand {
 	public CommandSyncData(RTData data):base(data) { 
 		if (data==null)
 			return;
+		uint i = 1;
+		TimeStamp = data.GetLong (i).Value; i++;
+		int count = data.GetInt (i).Value; i++;
+		List<ComponentChange> changes = new List<ComponentChange> ();
+		Changes = new ReadonlyList<ComponentChange> (changes);
+		for (int ind = 0; ind < count; ind++) {
+			ComponentChange currChange = ParseChange (data.GetData (i)); i++;
+			changes.Add (currChange);
+		}
+	}
+	private ComponentChange ParseChange(RTData data) {
 		uint i=1;
 		long entityId = data.GetInt(i).Value; i++;
 		bool isRemoved = data.GetInt(i)==1; i++;
@@ -15,11 +26,12 @@ public class CommandSyncData : MatchCommand {
 
 		Type t = EntityComponent.GetType(componentTypeInd);
 		EntityComponent change = EntityComponent.Create(t, data, i);
-		Change = new ComponentChange(entityId, isRemoved, change);
+		return new ComponentChange(entityId, isRemoved, change);
 	}
-	public readonly ComponentChange Change;
+	public readonly long TimeStamp;
+	public readonly ReadonlyList<ComponentChange> Changes;
 	public override string ToString ()
 	{
-		return base.ToString() + " " + Change.Change.GetType().ToString();
+		return base.ToString ();// + " " + Change.Change.GetType().ToString();
 	}
 }
