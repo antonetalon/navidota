@@ -2,10 +2,12 @@ var CommandsController = require("CommandsControllerModule");
 var MatchController = require("MatchControllerModule");
 var Entities = require("EntitiesModule");
 var LagController = require("LagControllerModule");
+var SyncStartSystem = require("SyncStartSystemModule");
 var GameLoopUpdateInterval = 50;
 
 module.exports.OnStartSession = function() {
     CommandsController.RegisterCommands();
+    SyncStartSystem.Init();
     LagController.Init();
     RTSession.setInterval(GameLoopUpdate, GameLoopUpdateInterval);
 }

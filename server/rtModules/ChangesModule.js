@@ -7,21 +7,21 @@ var changes;
 
 module.exports.Init = function() {
     prevEntities = [];
-    changes = [];
+    changes = []; 
 }
 
 module.exports.SavePrevComponents = function(currEntities) {
     //RTSession.getLogger().debug("before save prev components");
     //RTSession.getLogger().debug("currEntities.length = " + currEntities.length);
-    prevEntities = Utils.Clone(currEntities);
+    prevEntities = Utils.Clone(currEntities); 
     //RTSession.getLogger().debug("after save prev components");
 }
 
 module.exports.CalcComponentsChange = function(currEntities) {
-   // var log = currEntities.length != prevEntities.length;
+   // var log = currEntities.length != prevEntities.length; 
     //if (log) RTSession.getLogger().debug("count changed");
     var componentName;
-    var compNames;
+    var compNames;  
     //RTSession.getLogger().debug("before calc change");
     changes.length = 0;
     for (var i=0;i<currEntities.length;i++) {

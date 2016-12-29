@@ -4,7 +4,7 @@ var CommandCodes = require("CommandCodesModule");
 module.exports.SendChanges = function(changes) {
     var data = RTSession.newData();
     var i=1;
-    data.setNumber(i, 100);i++;// - sending lag, not timestamp.  new Date().getTime()); i++;
+    data.setNumber(i, 0);i++;// - sending lag, not timestamp.  new Date().getTime()); i++;
     data.setNumber(i, changes.length); i++;
     for (var ind=0;ind<changes.length;ind++) {
         var currChangeData = SendChange(changes[ind]);
