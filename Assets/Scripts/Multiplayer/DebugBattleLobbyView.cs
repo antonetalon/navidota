@@ -73,8 +73,7 @@ namespace Multiplayer {
 					GUILayout.Label("lag = " + LagController.Lag.ToString(), DebugOnGUIAuth.ProperHeight);
 					foreach (var player in GameController.Instance.Lobby.Players)
 						GUILayout.Label("player name = " + player.Name);
-					if (!MatchController.Instance.IsPlaying)
-						MatchController.Instance.StartMatch(true);
+
 					if (GUILayout.Button("Leave match", DebugOnGUIAuth.ProperHeight)) {
 						LobbyController.LeaveMatch();
 						MatchController.Instance.EndMatch();

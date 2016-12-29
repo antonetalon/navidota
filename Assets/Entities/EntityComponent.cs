@@ -103,7 +103,7 @@ public abstract class EntityComponent {
 	}
 
 	public override string ToString () {
-		return string.Format("numbers=[{0}], vecs=[{1}], bools=[{2}], strings=[{3}]", ListJoin<float>(_numbers), ListJoin<Vector2>(_vectors), ListJoin<bool>(_bools), ListJoin<string>(_strings));
+		return string.Format("numbers=[{0}], vecs=[{1}], bools=[{2}], strings=[{3}]", ListJoin<float>(_numbers), ListJoinVec(_vectors), ListJoin<bool>(_bools), ListJoin<string>(_strings));
 	}
 	private static string ListJoin<T>(List<T> list) {
 		StringBuilder sb = new StringBuilder();
@@ -119,7 +119,7 @@ public abstract class EntityComponent {
 		for (int i=0;i<list.Count;i++) {
 			if (i>0)
 				sb.Append(",");
-			sb.AppendFormat("[{0},{1}]", list[i].x, list[i].y);
+			sb.AppendFormat("[{0:##.000},{1:##.000}]", list[i].x, list[i].y);
 		}
 		return sb.ToString();
 	}

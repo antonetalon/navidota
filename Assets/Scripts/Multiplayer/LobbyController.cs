@@ -78,6 +78,7 @@ namespace Multiplayer {
 		}
 		private static void OnRTMatchConnected(bool success) {
 			Debug.Log("Match connected success = " + success.ToString());
+			GameSparksRTManager.Instance.SetCommandsFactory(new NaviDotaCommandsParser());
 			GameController.Instance.Lobby.OnRTSessionConnected();
 			Timer.OnMatchConnected ();
 		}
@@ -92,8 +93,11 @@ namespace Multiplayer {
 			GameSparksRTManager.Instance.SendDataReliable(new CommandReadyForMatch());
 		}
 		private static void OnCommandReceived(MatchCommand command) {
-			if (command is CommandAllPlayersReady)
-				GameController.Instance.Lobby.OnAllPlayersReady();
+			if (!(command is CommandAllPlayersReady))
+				return;
+			GameController.Instance.Lobby.OnAllPlayersReady();
+			if (!MatchController.Instance.IsPlaying)
+				MatchController.Instance.StartMatch(true);
 		}
 		public static void Update() {
 			UpdateSearchTimeout();

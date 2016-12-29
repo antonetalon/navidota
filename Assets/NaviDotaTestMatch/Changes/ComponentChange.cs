@@ -10,10 +10,10 @@ public class ComponentChange {
 	public ComponentChange(long entityId, bool isRemoved, EntityComponent before, EntityComponent after) {
 		this.EntityId = entityId;
 		this.IsRemoved = isRemoved;
-		this.Before = before;
-		this.After = after;
+		this.Before = before == null ? null : before.Clone ();
+		this.After = after == null ? null : after.Clone ();
 	}
 	public void SetPrevState(EntityComponent before) {
-		this.Before = before;
+		this.Before = before == null ? null : before.Clone ();
 	}
 }

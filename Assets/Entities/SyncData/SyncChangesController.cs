@@ -16,9 +16,9 @@ public class SyncChangesController {
 		CommandSyncData command = currCommand as CommandSyncData;
 		if (command==null)
 			return;	
-		StringBuilder sb = new StringBuilder ("sync received at ");
+		/*StringBuilder sb = new StringBuilder ("sync received at ");
 		sb.Append (Timer.Time);
-		sb.Append(", lag = ");
+		sb.Append (", lag = ");
 		sb.Append (command.Lag);
 		foreach (var change in command.Changes) {
 			sb.Append ("; (type=");
@@ -27,17 +27,32 @@ public class SyncChangesController {
 			sb.Append (change.After.ToString ());
 			sb.Append (")");
 		}
-		Debug.Log (sb.ToString());
+		Debug.Log (sb.ToString ());*/
 
-
-		float commandDelay = (command.Lag+LagController.Lag)*0.001f;
-		TimeMachiene.GoToPast(commandDelay);
+		//LogCharPos ("Before sync");
+		float commandDelay = (command.Lag + LagController.Lag) * 0.001f;
+		TimeMachiene.GoToPast (commandDelay);
+		//LogCharPos ("In past");
 		foreach (var change in command.Changes)
-			SaveBeforeState(change);
+			SaveBeforeState (change);
 		foreach (var change in command.Changes)
-			ApplyChange(change);
+			ApplyChange (change);
+		//LogCharPos ("after sync in past");
 		TimeMachiene.SaveReceivedCommands (command.Changes);
-		TimeMachiene.GoForward(commandDelay);
+		TimeMachiene.GoForward (commandDelay);
+		//LogCharPos ("after sync in curr time");
+	}
+	public static void LogCharPos(string comment) {
+		var chars = Entities.GetEntities (new Type[] { typeof(PositionComponent), typeof(MovingComponent) });
+		Entity character = null;
+		foreach (var curr in chars) {
+			character = curr;
+			break;
+		}
+		if (character == null)
+			Debug.Log (comment + " - char not exists");
+		else
+			Debug.LogFormat ("{0} - pos=[{1:##.000};{2:##.000}]", comment, character.GetComponent<PositionComponent> ().Position.x, character.GetComponent<PositionComponent> ().Position.y);
 	}
 	private static List<ComponentChange> _currUpdateChanges;
 	private static void SaveBeforeState(ComponentChange change) {

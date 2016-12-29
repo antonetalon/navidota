@@ -10,8 +10,7 @@ public class MatchController : MonoBehaviour {
 	void Awake() {
 		Instance = this;
 	}
-	public void StartMatch(bool multiplayer) {
-		GameSparksRTManager.Instance.SetCommandsFactory(new NaviDotaCommandsParser());
+	public void StartMatch(bool multiplayer) {		
 		var systems = new List<EntitySystem>() {
 			new MovingSystem()
 		};
@@ -37,11 +36,14 @@ public class MatchController : MonoBehaviour {
 		_isPlaying = false;
 	}
 
-	public void Update () {
-		Timer.Update (Time.deltaTime);
+	public void UpdateWithDelta (float delta) {
+		Timer.Update (delta);
 		if (!_isPlaying)
 			return;
 		Entities.Update();
 		LagController.Update ();
+	}
+	void Update () {
+		UpdateWithDelta (Time.deltaTime);
 	}
 }

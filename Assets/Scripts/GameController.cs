@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Multiplayer;
+using System;
 
 public class GameController : MonoBehaviour {
 
@@ -38,5 +39,13 @@ public class GameController : MonoBehaviour {
 	void Update () {
 		AuthController.Update();
 		LobbyController.Update();
+	}
+
+	public void ExecuteAtNextFrame(Action action) {
+		StartCoroutine (ExecutingAtNextFrame (action));
+	}
+	IEnumerator ExecutingAtNextFrame(Action action) {
+		yield return new WaitForEndOfFrame ();
+		action ();
 	}
 }
