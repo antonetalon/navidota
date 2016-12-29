@@ -97,10 +97,6 @@ namespace Multiplayer {
 		}
 		public static void Update() {
 			UpdateSearchTimeout();
-			if (GameController.Instance.Lobby.State == StateEnum.GettingReady || GameController.Instance.Lobby.State == StateEnum.IsPlaying
-				|| GameController.Instance.Lobby.State == StateEnum.WaitingOtherPlayers) {
-				Timer.Update (Time.deltaTime);
-			}
 		}
 		private static void UpdateSearchTimeout() {
 			if (GameController.Instance.Lobby.State != StateEnum.SearchingMatch)

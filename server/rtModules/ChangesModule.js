@@ -68,7 +68,7 @@ module.exports.CalcComponentsChange = function(currEntities) {
 function LogChanges() {
     if (changes.length==0)
         return;
-    RTSession.getLogger().debug("Changes detected = " + JSON.stringify(changes));
+    //RTSession.getLogger().debug("Changes detected = " + JSON.stringify(changes));
 }
 
 function CalcComponentsChangeInOneEntity(currEntity, prevEntity) {

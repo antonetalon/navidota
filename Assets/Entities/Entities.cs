@@ -102,11 +102,13 @@ public static class Entities {
 			_entities.Remove (entity);
 	}
 	public static void Update() {
+		ChangesController.SavePrevComponents (_entities);
 		foreach (EntitySystem system in _systems) {
 			foreach (Entity entity in _entities) {
 				if (entity.HasComponents(system.RequiredComponents))
 					system.Update(entity);
 			}
 		}
+		ChangesController.CalcComponentsChange (_entities);
 	}
 }

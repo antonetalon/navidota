@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Entity {
 	public readonly long Id;
+	private readonly bool IsInEntities; 
 	public Entity(long id, params Type[] types):this(id, CreateDefaultComponents(types)) { }
 	private static IEnumerable<EntityComponent> CreateDefaultComponents(Type[] types) {
 		List<EntityComponent> components = new List<EntityComponent> ();
@@ -13,6 +14,7 @@ public class Entity {
 		return components;
 	}
 	public Entity(long id, IEnumerable<EntityComponent> components) {
+		this.IsInEntities = true;
 		this.Id = id;
 		_components = new List<EntityComponent>();
 		foreach (EntityComponent component in components)
@@ -25,7 +27,8 @@ public class Entity {
 	}
 	public void AddComponent(EntityComponent component) {
 		AddComponentPrivate(component);
-		Entities.OnComponentAdded(this, component.GetType());
+		if (IsInEntities)
+			Entities.OnComponentAdded(this, component.GetType());
 	}
 	public bool RemoveComponent(Type t) {
 		EntityComponent removedComponent = null;
@@ -38,7 +41,8 @@ public class Entity {
 		if (removedComponent == null)
 			return false;
 		_components.Remove (removedComponent);
-		Entities.OnComponentRemoved(this, t);
+		if (IsInEntities)
+			Entities.OnComponentRemoved(this, t);
 		return true;
 	}
 	private void AddComponentPrivate(EntityComponent component) {
@@ -61,6 +65,7 @@ public class Entity {
 		}
 		return null;
 	}
+	public IEnumerable<EntityComponent> GetComponents() { return _components; }
 	public bool HasComponents(Type[] types) {
 		foreach (Type type in types) {
 			if (GetComponent(type)==null)
@@ -69,4 +74,14 @@ public class Entity {
 		return true;
 	}
 	public bool Empty { get { return _components.Count == 0; } }
+	public Entity Clone() {
+		return new Entity (this);
+	}
+	private Entity(Entity origin) {
+		IsInEntities = false;
+		Id = origin.Id;
+		_components = new List<EntityComponent> ();
+		foreach (EntityComponent component in origin._components)
+			_components.Add (component.Clone ());
+	}
 }

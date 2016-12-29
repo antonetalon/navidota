@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Text;
 
 public class SyncChangesController {
 	
@@ -15,14 +16,42 @@ public class SyncChangesController {
 		CommandSyncData command = currCommand as CommandSyncData;
 		if (command==null)
 			return;	
-		//Debug.LogFormat("Sync received, type = {0}, id={1}, del={2}, change={3}", command.Change.Change.GetType().ToString(),
-		//	command.Change.EntityId, command.Change.IsRemoved, command.Change.Change.ToString());
+		StringBuilder sb = new StringBuilder ("sync received at ");
+		sb.Append (Timer.Time);
+		sb.Append(", lag = ");
+		sb.Append (command.Lag);
+		foreach (var change in command.Changes) {
+			sb.Append ("; (type=");
+			sb.Append (change.After.GetType ());
+			sb.Append (", data=");
+			sb.Append (change.After.ToString ());
+			sb.Append (")");
+		}
+		Debug.Log (sb.ToString());
+
+
+		float commandDelay = (command.Lag+LagController.Lag)*0.001f;
+		TimeMachiene.GoToPast(commandDelay);
+		foreach (var change in command.Changes)
+			SaveBeforeState(change);
 		foreach (var change in command.Changes)
 			ApplyChange(change);
+		TimeMachiene.SaveReceivedCommands (command.Changes);
+		TimeMachiene.GoForward(commandDelay);
 	}
-	static void ApplyChange(ComponentChange change) {
+	private static List<ComponentChange> _currUpdateChanges;
+	private static void SaveBeforeState(ComponentChange change) {
 		Entity entity = Entities.Find (change.EntityId);
-		Type componentType = change.Change.GetType ();
+		if (entity == null)
+			return; // Prev component is null.
+		EntityComponent prevComponent = entity.GetComponent(change.After.GetType());
+		if (prevComponent == null)
+			return;
+		change.SetPrevState (prevComponent);
+	}
+	public static void ApplyChange(ComponentChange change) {
+		Entity entity = Entities.Find (change.EntityId);
+		Type componentType = change.IsRemoved?change.Before.GetType():change.After.GetType ();
 		if (change.IsRemoved) {
 			if (entity == null) {
 				Debug.Log ("Received intent to remove component from non-existing entity");
@@ -35,12 +64,32 @@ public class SyncChangesController {
 			EntityComponent existingComponent = entity == null ? null : entity.GetComponent (componentType);
 			if (existingComponent == null) {				
 				if (entity == null) // Add new entity.
-					entity = Entities.AddEntityFromSync(change.EntityId, change.Change);
+					entity = Entities.AddEntityFromSync(change.EntityId, change.After);
 				else // Add new component.
-					entity.AddComponent (change.Change);
+					entity.AddComponent (change.After);
 			} else {
 				// Apply changes to existing component.
-				existingComponent.AddChange(change.Change);
+				existingComponent.AddChange(change.After);
+			}
+		}
+	}
+	public static void UndoChange(ComponentChange change) {
+		Entity entity = Entities.Find (change.EntityId);
+		Type componentType = change.IsRemoved?change.Before.GetType():change.After.GetType ();
+		if (change.IsRemoved) {
+			// Add new component.
+			if (entity == null) // Add new entity.
+				entity = Entities.AddEntityFromSync(change.EntityId, change.Before);
+			else // Add new component.
+				entity.AddComponent (change.Before);
+		} else {
+			if (change.Before == null) {
+				// Remove component.
+				entity.RemoveComponent (componentType);
+			} else {
+				// Undo changes in existing component.
+				EntityComponent existingComponent = entity.GetComponent (componentType);
+				existingComponent.AddChange(change.Before);
 			}
 		}
 	}

@@ -114,4 +114,41 @@ public abstract class EntityComponent {
 		}
 		return sb.ToString();
 	}
+	private static string ListJoinVec(List<Vector2> list) {
+		StringBuilder sb = new StringBuilder();
+		for (int i=0;i<list.Count;i++) {
+			if (i>0)
+				sb.Append(",");
+			sb.AppendFormat("[{0},{1}]", list[i].x, list[i].y);
+		}
+		return sb.ToString();
+	}
+	public EntityComponent Clone() {
+		EntityComponent clone = Create (GetType ());
+		clone.AddChange (this);
+		return clone;
+	}
+	public override bool Equals (object obj)
+	{
+		EntityComponent other = obj as EntityComponent;
+		if (other == null || other.GetType () != this.GetType ())
+			return false;
+		for (int i = 0; i < _numbers.Count; i++) {
+			if (_numbers [i] != other._numbers [i])
+				return false;
+		}
+		for (int i = 0; i < _vectors.Count; i++) {
+			if (_vectors [i] != other._vectors [i])
+				return false;
+		}
+		for (int i = 0; i < _bools.Count; i++) {
+			if (_bools [i] != other._bools [i])
+				return false;
+		}
+		for (int i = 0; i < _strings.Count; i++) {
+			if (_strings [i] != other._strings [i])
+				return false;
+		}
+		return true;
+	}
 }

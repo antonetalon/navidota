@@ -2,8 +2,15 @@ var CommandsController = require("CommandsControllerModule");
 var CommandCodes = require("CommandCodesModule");
 
 module.exports.SendChanges = function(changes) {
-    for (var i=0;i<changes.length;i++)
-        SendChange(changes[i]);
+    var data = RTSession.newData();
+    var i=1;
+    data.setNumber(i, 100);i++;// - sending lag, not timestamp.  new Date().getTime()); i++;
+    data.setNumber(i, changes.length); i++;
+    for (var ind=0;ind<changes.length;ind++) {
+        var currChangeData = SendChange(changes[ind]);
+        data.setData(i, currChangeData); i++;
+    }
+    CommandsController.Send(CommandCodes.CommandCodes.SyncData, data);
 }
 
 function SendChange(change) {
@@ -44,7 +51,7 @@ function SendChange(change) {
             return;
         data.setString(i, val); i++;
     });
-    CommandsController.Send(CommandCodes.CommandCodes.SyncData, data);
+    return data;
 }
 
 function IterateComponentFields(component, func) {

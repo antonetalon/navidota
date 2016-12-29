@@ -122,7 +122,7 @@ public class GameSparksRTManager : MonoBehaviour {
 	/// <param name="data">Data.</param>
 	private void OnReliableDataReceived(int opCode, RTData data) {
 		MatchCommand command = _commandsParser.ParseCommand(opCode, data);
-		Debug.Log("Received command " + command.ToString());
+//		Debug.Log("Received command " + command.ToString());
 		if (OnCommandReceived!=null)
 			OnCommandReceived(command);
 	}
@@ -130,7 +130,7 @@ public class GameSparksRTManager : MonoBehaviour {
 	private void SendPacket(int command, RTData data, bool reliable) {
 		if (data==null)
 			data = new RTData();
-		Debug.Log("Sent RT packet, opCode = " + command);
+//		Debug.Log("Sent RT packet, opCode = " + command);
 		_RT.SendData(command, reliable?GameSparksRT.DeliveryIntent.RELIABLE:GameSparksRT.DeliveryIntent.UNRELIABLE_SEQUENCED, data, _serverPeerId);
 	}
 	void Update() {
@@ -151,7 +151,7 @@ public class GameSparksRTManager : MonoBehaviour {
 			Debug.LogError("opcode not found for command " + command.ToString());
 			return;
 		}
-		Debug.Log ("Sent command " + command.ToString());
+//		Debug.Log ("Sent command " + command.ToString());
 		SendDataReliable(opCode, command.Data);
 	}
 	private void SendDataReliable (int opCode, RTData data) {

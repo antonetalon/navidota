@@ -52,7 +52,8 @@ public class MatchView : MonoBehaviour {
 			return;
 		Vector2 targetPos = new Vector2(hit.point.x, hit.point.y);
 		InputControlSystem.Instance.Send(targetPos);
-		Debug.Log("target pos = " + targetPos.x.ToString() + "; " + targetPos.y.ToString());
+		var currPos = Entities.Find (_characterEntityIds [0]).GetComponent<PositionComponent> ().Position;
+		Debug.LogFormat("sent from [{0};{1}] to [{2};{3}] at {4}",  currPos.x, currPos.y, targetPos.x, targetPos.y, Timer.Time);
 	}
 	void UpdatePosition() {
 		for (int i = _characterEntityIds.Count-1; i >=0; i--) {

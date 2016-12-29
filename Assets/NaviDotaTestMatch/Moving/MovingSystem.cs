@@ -11,7 +11,7 @@ public class MovingSystem : EntitySystem {
 		if (!moving.IsMoving)
 			return;
 		PositionComponent position = entity.GetComponent<PositionComponent>();
-		position.Position = Vector2.MoveTowards(position.Position, moving.Target, moving.Speed*Time.deltaTime);
+		position.Position = Vector2.MoveTowards(position.Position, moving.Target, moving.Speed*Timer.DeltaTime);
 		const float eps = 0.001f;
 		if (Vector2.Distance(position.Position, moving.Target)<eps)
 			moving.IsMoving = false;

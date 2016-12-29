@@ -23,6 +23,7 @@ public class MatchController : MonoBehaviour {
 			systems.Add(new InputControlSystem());
 		}
 		LagController.OnMatchStarted ();
+		TimeMachiene.OnStartMatch ();
 		Entities.Init(systems);
 		SyncChangesController.OnStartMatch();
 		_view.OnStartMatch();
@@ -36,7 +37,8 @@ public class MatchController : MonoBehaviour {
 		_isPlaying = false;
 	}
 
-	void Update () {
+	public void Update () {
+		Timer.Update (Time.deltaTime);
 		if (!_isPlaying)
 			return;
 		Entities.Update();

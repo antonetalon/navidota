@@ -9,7 +9,7 @@ public class CommandSyncData : MatchCommand {
 		if (data==null)
 			return;
 		uint i = 1;
-		TimeStamp = data.GetLong (i).Value; i++;
+		Lag = data.GetLong (i).Value; i++;
 		int count = data.GetInt (i).Value; i++;
 		List<ComponentChange> changes = new List<ComponentChange> ();
 		Changes = new ReadonlyList<ComponentChange> (changes);
@@ -25,10 +25,10 @@ public class CommandSyncData : MatchCommand {
 		int componentTypeInd = data.GetInt(i).Value; i++;
 
 		Type t = EntityComponent.GetType(componentTypeInd);
-		EntityComponent change = EntityComponent.Create(t, data, i);
-		return new ComponentChange(entityId, isRemoved, change);
+		EntityComponent after = EntityComponent.Create(t, data, i);
+		return new ComponentChange(entityId, isRemoved, null, after);
 	}
-	public readonly long TimeStamp;
+	public readonly long Lag;
 	public readonly ReadonlyList<ComponentChange> Changes;
 	public override string ToString ()
 	{
