@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MatchView : MonoBehaviour {
-
+	[SerializeField] float _maxCharSpeed = 3;
 	[SerializeField] Transform _characterViewPrefab;
 	List<Transform> _characterViews;
 
@@ -62,7 +62,7 @@ public class MatchView : MonoBehaviour {
 			if (character != null) {
 				var pos = character.GetComponent<PositionComponent> ();
 				if (pos != null) {
-					_characterViews [i].localPosition = new Vector3 (pos.Position.x, pos.Position.y, 0);
+					_characterViews [i].localPosition = Vector3.MoveTowards (_characterViews [i].localPosition, new Vector3 (pos.Position.x, pos.Position.y, 0), Time.deltaTime * _maxCharSpeed);
 					exists = true;
 				}
 			}
