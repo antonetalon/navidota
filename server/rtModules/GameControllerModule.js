@@ -19,5 +19,5 @@ module.exports.OnStartMatch = function() {
 function GameLoopUpdate() {
     CommandsController.ProcessCommands();
     if (MatchController.GetMatchStarted())
-        MatchController.Update();
+        MatchController.Update(GameLoopUpdateInterval*0.001);
 }

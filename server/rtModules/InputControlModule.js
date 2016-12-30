@@ -21,10 +21,12 @@ function Component() {
 module.exports.ProcessMoveCommand = function(/*CommandModule.Command*/command) {
     //RTSession.getLogger().debug("move command processing started");
     var rtData = command.RtData;
+    var i = 1;
+    var lag = rtData.getNumber(i); i++;
     //RTSession.getLogger().debug("got data = "+rtData);
-    var x = rtData.getFloat(1);
+    var x = rtData.getFloat(i); i++;
     //RTSession.getLogger().debug("got float x = "+x);
-    var y = rtData.getFloat(2);
+    var y = rtData.getFloat(i); i++;
     //RTSession.getLogger().debug("got float y = "+y);
     var targetVec = Vector2.Create(x, y);
     //RTSession.getLogger().debug("got target vec = "+targetVec);

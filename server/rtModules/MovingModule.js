@@ -1,3 +1,5 @@
+var Timer = require("TimerModule");
+
 module.exports.CreateComponent = function() {
    return new Component();
 }
@@ -30,7 +32,7 @@ function System() {
         
         var toTarget = Vector2.Subtract(entity.Moving.Target, entity.Position.Position);
         var distToTarget = toTarget.GetLength();
-        var DeltaTime = 50/1000;
+        var DeltaTime = Timer.GetDeltaTime();
         var coveredLength = entity.Moving.Speed*DeltaTime;
         if (coveredLength>distToTarget) {
             // Arrived to target.

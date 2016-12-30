@@ -1,10 +1,11 @@
 var CommandsController = require("CommandsControllerModule");
 var CommandCodes = require("CommandCodesModule");
+var Timer = require("TimerModule");
 
 module.exports.SendChanges = function(changes) {
     var data = RTSession.newData();
     var i=1;
-    data.setNumber(i, 0);i++;// - sending lag, not timestamp.  new Date().getTime()); i++;
+    data.setNumber(i, Timer.GetDepthInPast());i++;// - sending lag, not timestamp.  new Date().getTime()); i++;
     data.setNumber(i, changes.length); i++;
     for (var ind=0;ind<changes.length;ind++) {
         var currChangeData = SendChange(changes[ind]);

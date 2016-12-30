@@ -15,10 +15,13 @@ module.exports.Init = function(systemsList) {
     // Copy systmes list.
     for (var i=0;i<systemsList.length;i++)
         systems.push(systemsList[i]);
+    Changes.SavePrevComponents(entities);
     // Start all systems.
     for (var i=0;i<systems.length;i++)
         systems[i].OnStart();
     RTSession.getLogger().debug("systems started");
+    // Initial change calc to send initial state to clients.
+    Changes.CalcComponentsChange(entities);
     // Log them all.
     var log = "systems = \n " + systems.length + "\n entities = \n " + entities.length;
     RTSession.getLogger().debug(log);
@@ -37,6 +40,14 @@ module.exports.AddEntity = function(componentsList) {
         //RTSession.getLogger().debug("after adding component");
     }
     return maxId;
+}
+
+module.exports.AddEntityFromSync = function(entityId, component) {
+    if (entityId>maxId)
+        maxId = entityId;
+    var newEntity = Entity.CreateEntity(entityId);
+    AddComponent(newEntity, component);
+    entities.push(newEntity);
 }
 
 module.exports.AddComponent = function(entityId, component) {
@@ -96,6 +107,7 @@ module.exports.GetEntity = function(id) {
 }
 
 module.exports.Update = function() {
+    Changes.SavePrevComponents(entities);
     // Calling Update for all systems.
     for (var i=0;i<systems.length;i++) {
         for (var j=0;j<entities.length;j++) {
@@ -104,5 +116,4 @@ module.exports.Update = function() {
         }
     }
     Changes.CalcComponentsChange(entities);
-    Changes.SavePrevComponents(entities);
 }

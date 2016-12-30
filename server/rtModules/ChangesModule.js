@@ -2,6 +2,7 @@ var Utils = require("UtilsModule");
 var Component = require("ComponentModule");
 var Vector2 = require("Vector2Module");
 var SyncChanges = require("SyncChangesModule");
+var TimeMachiene = require("TimeMachieneModule");
 var prevEntities;
 var changes;
 
@@ -23,7 +24,7 @@ module.exports.CalcComponentsChange = function(currEntities) {
     var componentName;
     var compNames;  
     //RTSession.getLogger().debug("before calc change");
-    changes.length = 0;
+    changes = [];
     for (var i=0;i<currEntities.length;i++) {
         var prevInd = FindInd(prevEntities, currEntities[i].Id);
         if (prevInd==-1) {
@@ -63,6 +64,7 @@ module.exports.CalcComponentsChange = function(currEntities) {
     if (changes.length>0)
         SyncChanges.SendChanges(changes);
     //RTSession.getLogger().debug("after calc change");
+    TimeMachiene.SaveCalculatedChanges(changes);
 }
 
 function LogChanges() {
@@ -122,41 +124,40 @@ function ComponentChange(entityId, isRemoved, prevComponent, currComponent) {
     //    " prev="+JSON.stringify(prevComponent)+ " curr="+JSON.stringify(currComponent));
     this.EntityId = entityId;
     this.IsRemoved = isRemoved;
+    this.Type = prevComponent!=null?prevComponent.Type:currComponent.Type;
+    
     var change = null;
     this.EmptyChange = false;
     if (isRemoved) { 
         //RTSession.getLogger().debug("change = removing component " + JSON.stringify(prevComponent));
-        change = Utils.Clone(prevComponent); // Removing.
+        this.Before = Utils.Clone(prevComponent); // Removing.
     } else if (prevComponent==null)
-        change = Utils.Clone(currComponent); // Adding.
+        this.After = Utils.Clone(currComponent); // Adding.
     else {                                   // Modifying.
         // Calc difference.
         this.EmptyChange = true;
-        change = {};
+        this.Before = prevComponent;
+        this.After = currComponent;
         for (var key in currComponent) {
             if (key=="Type")
-                change[key] = currComponent[key];
-            else if (typeof(currComponent[key]) == "number") {
-                change[key] = currComponent[key];// - prevComponent[key];
+                continue;
+            if (typeof(currComponent[key]) == "number") {
                 if (currComponent[key]!=prevComponent[key]) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("number changed");
                 }
             } else if (typeof(currComponent[key]) == "object") {
                 // Vector2.
-                change[key] = currComponent[key];//Vector2.Subtract(currComponent[key], prevComponent[key]);
                 if (!Vector2.Equals(currComponent[key], prevComponent[key])) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("vector changed");
                 }
             } else if (typeof(currComponent[key]) == "boolean") {
-                change[key] = currComponent[key];//!!(currComponent[key]^prevComponent[key]); // Logical xor mimic.
                 if (currComponent[key]!=prevComponent[key]) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("bool changed");
                 }
             } else if (typeof(currComponent[key]) == "string") {
-                change[key] = currComponent[key];
                 if (currComponent[key]!=prevComponent[key]) {
                     this.EmptyChange = false;
                     //RTSession.getLogger().debug("string changed");
@@ -165,7 +166,5 @@ function ComponentChange(entityId, isRemoved, prevComponent, currComponent) {
         }
     }
     //RTSession.getLogger().debug("nothing changed = " + this.EmptyChange);
-    var compName = Component.GetName(change.Type);
-    this[compName] = change;
     //RTSession.getLogger().debug("after ComponentChange creation");
 }
