@@ -13,7 +13,7 @@ module.exports.Send = function(opCode, rtData) {
     if (rtData==null)
         rtData = RTSession.newData();
     RTSession.newPacket().setOpCode(opCode).setData(rtData).send();
-    RTSession.getLogger().debug("sent command " + opCode);
+    //RTSession.getLogger().debug("sent command " + opCode);
 }
 
 module.exports.RegisterCommands = function() {
@@ -35,9 +35,11 @@ function AddCommand(opCode) {
 
 module.exports.ProcessCommands = function() {
     while (ReceivedCommands.length>0) {
-        RTSession.getLogger().debug("start processing command");
+        //RTSession.getLogger().debug("start processing command");
         //RTSession.getLogger().debug("entities in present before command = " + JSON.stringify(Entities.GetEntities()));
         var command = ReceivedCommands.shift();
+        if (command==null)
+            continue;
         var lag = command.RtData.getNumber(1)*0.001;
         //RTSession.getLogger().debug("command lag received, it = " + lag);
         lag = TimeMachiene.GoToPast (lag);

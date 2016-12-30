@@ -8,5 +8,6 @@ function Component() {
     this.Position = Vector2.Create(0, 0);
     //RTSession.getLogger().debug("vec2 created for pos");
     this.Type = 2;
+    //this.SyncInterval = 1;
     //RTSession.getLogger().debug("addtoentity createds");
 }

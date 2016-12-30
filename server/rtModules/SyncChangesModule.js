@@ -21,7 +21,7 @@ function SendChange(change) {
     var i = 1;
     data.setNumber(i, change.EntityId); i++;
     data.setNumber(i, +change.IsRemoved); i++; // Convert bool to number.
-    var component = change.Before == null?change.After:change.Before;
+    var component = change.After == null?change.Before:change.After;
     if (component==null) {
         RTSession.getLogger().debug("cant find changed component, change = "+JSON.stringify(change));
         return;
