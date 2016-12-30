@@ -36,7 +36,7 @@ module.exports.ProcessMoveCommand = function(/*CommandModule.Command*/command) {
         var entity = entities[i];
         entity.Moving.Target = targetVec;
         entity.Moving.IsMoving = true;
-        //RTSession.getLogger().debug("moving set successfully ");
+        RTSession.getLogger().debug("moving set successfully ");
     }
 }
 

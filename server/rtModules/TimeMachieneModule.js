@@ -19,7 +19,7 @@ module.exports.OnStartMatch = function() {
     futureFramesWithCommands = [];
 }
 module.exports.SaveCalculatedChanges = function(changes) {
-    var frame = new FrameStamp(changes, null, Timer.DeltaTime);
+    var frame = new FrameStamp(changes, null, Timer.GetDeltaTime());
     frames.push(frame);
     ClampFrames();
 }
@@ -27,8 +27,9 @@ module.exports.SaveReceivedCommand = function(command) {
     var frame = new FrameStamp(null, command, 0);
     frames.push(frame);
 }
-module.exports.GoToPast = function(timeShift) {
-    timeShift = Math.min(timeShift, MaxTimeShift);
+module.exports.GoToPast = function(timeShiftParam) {
+    timeShift = Math.min(timeShiftParam, MaxTimeShift);
+    //RTSession.getLogger().debug("going to past on " + timeShift + ", frames.length=" + frames.length);
     futureFramesWithCommands.length = 0;
     var currShift = 0;
     while (currShift<timeShift && frames.length>0) {
@@ -38,16 +39,19 @@ module.exports.GoToPast = function(timeShift) {
             frame.DeltaTime = timeShift - currShift;
         }
         if (frame.Changes!=null) {
+            //RTSession.getLogger().debug("undoing " + frame.Changes.length + " changes with dt = " + frame.DeltaTime);
             for (var i=0;i<frame.Changes.length;i++)
                 UndoChange(frame.Changes[i]);
         }
         currShift += frame.DeltaTime;
         Timer.GoToPast(frame.DeltaTime);
+        //RTSession.getLogger().debug("going to past, currShift=" + currShift + ", entities = " + JSON.stringify(Entities.GetEntities()));
     }
     module.exports.GoForward(currShift-timeShift);
     return timeShift;
 }
 module.exports.GoForward = function(timeShift) {
+    //RTSession.getLogger().debug("go forward on "+timeShift);
     var currShift = 0;
     while (currShift<timeShift) {
         var delta = Math.min(MaxStep, timeShift - currShift);
@@ -84,7 +88,7 @@ function ClampFrames() {
 function UndoChange(change) {
     var entity = Entities.GetEntity(change.EntityId);
     var typeInd = change.Type;
-    var typeName = Component.GetName.(typeInd);
+    var typeName = Component.GetName(typeInd);
     if (change.After==null) {
         // Component removed in change.
         // So add component back.

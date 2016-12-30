@@ -16,7 +16,7 @@ public class SyncChangesController {
 		CommandSyncData command = currCommand as CommandSyncData;
 		if (command==null)
 			return;	
-		/*StringBuilder sb = new StringBuilder ("sync received at ");
+		StringBuilder sb = new StringBuilder ("sync received at ");
 		sb.Append (Timer.Time);
 		sb.Append (", lag = ");
 		sb.Append (command.Lag);
@@ -27,7 +27,7 @@ public class SyncChangesController {
 			sb.Append (change.After.ToString ());
 			sb.Append (")");
 		}
-		Debug.Log (sb.ToString ());*/
+		Debug.Log (sb.ToString ());
 
 		//LogCharPos ("Before sync");
 		float commandDelay = (command.Lag + LagController.Lag) * 0.001f;

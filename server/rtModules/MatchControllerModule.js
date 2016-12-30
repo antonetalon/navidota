@@ -6,7 +6,11 @@ var InputControl = require("InputControlModule");
 var TimeMachiene = require("TimeMachieneModule");
 var Timer = require("TimerModule");
 
-var matchStarted = false;
+var matchStarted;
+module.exports.OnStartSession = function() {
+    matchStarted = false;
+}
+
 module.exports.GetMatchStarted = function() {
     return matchStarted;
 }
@@ -14,7 +18,7 @@ module.exports.GetMatchStarted = function() {
 module.exports.OnStartMatch = function() {
     Timer.Init();
     TimeMachiene.OnStartMatch();
-    RTSession.getLogger().debug("before systems creation");
+    //RTSession.getLogger().debug("before systems creation");
     var match = Match.CreateSystem();
     //RTSession.getLogger().debug("match created = " + JSON.stringify(match));
     var moving = Moving.CreateSystem();

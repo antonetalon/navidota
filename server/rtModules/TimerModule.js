@@ -5,6 +5,7 @@ module.exports.Init = function() {
     deltaTime = 0;
 }
 module.exports.GetDepthInPast = function() {
+    //RTSession.getLogger().debug("called GetDepthInPast");
     // How far in past are control in.
     return depthInPast;
 }

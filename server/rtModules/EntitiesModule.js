@@ -107,7 +107,9 @@ module.exports.GetEntity = function(id) {
 }
 
 module.exports.Update = function() {
+    //RTSession.getLogger().debug("start updating entities");
     Changes.SavePrevComponents(entities);
+    //RTSession.getLogger().debug("prev entities saved");
     // Calling Update for all systems.
     for (var i=0;i<systems.length;i++) {
         for (var j=0;j<entities.length;j++) {
@@ -115,5 +117,8 @@ module.exports.Update = function() {
                 systems[i].Update(entities[j]);
         }
     }
+   // RTSession.getLogger().debug("systems updated");
     Changes.CalcComponentsChange(entities);
+    //RTSession.getLogger().debug("changes calced");
+    //RTSession.getLogger().debug("end updating entities");
 }

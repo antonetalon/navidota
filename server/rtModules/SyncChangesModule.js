@@ -3,6 +3,7 @@ var CommandCodes = require("CommandCodesModule");
 var Timer = require("TimerModule");
 
 module.exports.SendChanges = function(changes) {
+     //RTSession.getLogger().debug("start SendChanges");
     var data = RTSession.newData();
     var i=1;
     data.setNumber(i, Timer.GetDepthInPast());i++;// - sending lag, not timestamp.  new Date().getTime()); i++;
@@ -12,6 +13,7 @@ module.exports.SendChanges = function(changes) {
         data.setData(i, currChangeData); i++;
     }
     CommandsController.Send(CommandCodes.CommandCodes.SyncData, data);
+    //RTSession.getLogger().debug("end SendChanges");
 }
 
 function SendChange(change) {
@@ -19,13 +21,7 @@ function SendChange(change) {
     var i = 1;
     data.setNumber(i, change.EntityId); i++;
     data.setNumber(i, +change.IsRemoved); i++; // Convert bool to number.
-    var component = null;
-    for (var field in change) {
-        if (!change.hasOwnProperty(field) || field == "EntityId" || field == "IsRemoved")
-            continue;
-        component = change[field];
-        break;
-    }
+    var component = change.Before == null?change.After:change.Before;
     if (component==null) {
         RTSession.getLogger().debug("cant find changed component, change = "+JSON.stringify(change));
         return;

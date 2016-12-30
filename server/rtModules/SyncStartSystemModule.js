@@ -7,14 +7,23 @@ var EverybodyReadySent;
 var ReadyPlayerIds;
 var PlayersCountForMatch;
 module.exports.Init = function() {
+    RTSession.getLogger().debug("sync start system init called");
     EverybodyReadySent = false;
     ReadyPlayerIds = [];
     PlayersCountForMatch = 2;
+    
+     RTSession.onPacket(CommandCodes.CommandCodes.ReadyForMatch, function(packet){
+        RTSession.getLogger().debug("received ready for match command ");
+        var time = new Date().getTime();
+        var sender = packet.getSender().getPeerId();
+        var command = new Commands.Command(CommandCodes.CommandCodes.ReadyForMatch, time, sender, packet.getData());
+        ProcessReadyForMatch(command);
+    });
     //RTSession.getLogger().debug("array inited = " + ReadyPlayerIds.length);
 }
 
-module.exports.ProcessReadyForMatch = function(/*CommandModule.Command*/command) {
-    //RTSession.getLogger().debug("called ProcessReadyForMatch");
+function ProcessReadyForMatch(/*CommandModule.Command*/command) {
+    RTSession.getLogger().debug("called ProcessReadyForMatch");
     SetReady(command.SendersPeer);
     if (EverybodyReady() && !EverybodyReadySent)
         SendAllPlayersReady();
@@ -22,7 +31,7 @@ module.exports.ProcessReadyForMatch = function(/*CommandModule.Command*/command)
 
 function SetReady(playersPeer) {
     //RTSession.getLogger().debug("called setready");
-    //RTSession.getLogger().debug("ready length = " + ReadyPlayerIds.length);
+    RTSession.getLogger().debug("ready length = " + ReadyPlayerIds.length);
     if (ReadyPlayerIds.indexOf(playersPeer)!=-1 || EverybodyReadySent)
         return;
     ReadyPlayerIds.push(playersPeer);
